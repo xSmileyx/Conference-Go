@@ -1,0 +1,304 @@
+.backButton {
+					-moz-box-shadow: 0px 0px 0px 0px #cf866c;
+					-webkit-box-shadow: 0px 0px 0px 0px #cf866c;
+					box-shadow: 0px 0px 0px 0px #cf866c;
+					background-color:#d0451b;
+					-moz-border-radius:28px;
+					-webkit-border-radius:28px;
+					border-radius:28px;
+					border:1px solid #942911;
+					display:inline-block;
+					cursor:pointer;
+					color:#ffffff;
+					font-family:Georgia;
+					font-size:15px;
+					font-weight:bold;
+					padding:11px 31px;
+					text-decoration:none;
+					text-shadow:0px 1px 0px #854629;
+					float:left;
+				}
+			.backButton:hover {
+					background-color:#bc3315;
+				}
+			.backButton:active {
+					position:relative;
+					top:1px;
+				}
+				
+			.myButton {
+					-moz-box-shadow: 0px 0px 0px 0px #276873;
+					-webkit-box-shadow: 0px 0px 0px 0px #276873;
+					box-shadow: 0px 0px 0px 0px #276873;
+					background-color:#599bb3;
+					-moz-border-radius:28px;
+					-webkit-border-radius:28px;
+					border-radius:28px;
+					border:1px solid #29668f;
+					display:inline-block;
+					cursor:pointer;
+					color:#ffffff;
+					font-family:Georgia;
+					font-size:15px;
+					font-weight:bold;
+					padding:11px 31px;
+					text-decoration:none;
+					text-shadow:0px 1px 0px #3d768a;
+					float:right;
+				}
+			.myButton:hover {
+				background-color:#408c99;
+				}
+			.myButton:active {
+				position:relative;
+				top:1px;
+				}
+				
+			.clButton {
+					-moz-box-shadow: 0px 0px 0px 0px #276873;
+					-webkit-box-shadow: 0px 0px 0px 0px #276873;
+					box-shadow: 0px 0px 0px 0px #276873;
+					background-color: #fddb9e;
+					-moz-border-radius:28px;
+					-webkit-border-radius:28px;
+					border-radius:28px;
+					border:1px solid #29668f;
+					display:inline-block;
+					cursor:pointer;
+					color:white;
+					font-family:Georgia;
+					font-size:15px;
+					font-weight:bold;
+					padding:11px 31px;
+					text-decoration:none;
+					text-shadow:0px 1px 0px #3d768a;
+					float:right;
+					
+				}
+			.clButton:hover {
+				background-color:#dada71;
+				}
+			.clButton:active {
+				position:relative;
+				top:1px;
+				}
+				
+				
+			.prButton {
+				-moz-box-shadow: 0px 0px 0px 0px #276873;
+				-webkit-box-shadow: 0px 0px 0px 0px #276873;
+				box-shadow: 0px 0px 0px 0px #276873;
+				background-color:green;
+				-moz-border-radius:28px;
+				-webkit-border-radius:28px;
+				border-radius:28px;
+				border:1px solid #29668f;
+				display:inline-block;
+				cursor:pointer;
+				color:#ffffff;
+				font-family:Georgia;
+				font-size:15px;
+				font-weight:bold;
+				padding:11px 31px;
+				text-decoration:none;
+				text-shadow:0px 1px 0px #3d768a
+				float:right;
+			}
+			.prButton:hover {
+				background-color:#408c99;
+			}
+			.prButton:active {
+				position:relative;
+				top:1px;
+			}
+
+#body{max-width:100%;	}
+
+.some-class {
+  float: left;
+  clear: none;
+  display:inline-block;
+}
+
+label {
+  float: left;
+  padding: 2px 1em 0 0;
+}
+
+input[type=radio],
+input.radio {
+  float: left;
+}
+
+legend
+	{
+		max-width:800px;
+		font-size:20px;
+		font-weight: bold;
+		background-color:#fff;		
+		padding:10px 50px;
+		border:1px solid gray;
+		border-radius:10px;
+		font-family:raleway;
+	}
+textarea{width:100%;height:100%;}		
+		
+fieldset
+	{
+		font-size:15px;
+		max-width:120%;
+		width:120%;
+		background-color:#fff;		
+		padding:10px 20px;
+		border:1px solid gray;
+		border-radius:10px;
+		font-family:raleway;
+		overflow:hidden;
+	}
+form 
+	{
+		max-width:800px;
+		min-width:250px;
+		padding:10px 50px;
+		border:0px solid gray;
+		border-radius:10px;
+		font-family:raleway;
+		
+		margin-left: 30%;
+		margin:auto;
+		
+	}
+	
+	
+	#map {
+        height: 500px;
+		 border:2px solid #d4d4d4;
+	
+      }
+      .controls {
+        margin-top: 10px;
+        border: 1px solid transparent;
+        border-radius: 2px 0 0 2px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        height: 32px;
+        outline: none;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      }
+
+      #pac-input {
+        background-color: #fff;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        margin-left: 12px;
+        padding: 0 11px 0 13px;
+        text-overflow: ellipsis;
+        width: 300px;
+		height:20px;
+      }
+
+      #pac-input:focus {
+        border-color: #4d90fe;
+      }
+
+      .pac-container {
+        font-family: Roboto;
+      }
+
+      #type-selector {
+        color: #fff;
+        background-color: #4d90fe;
+        padding: 5px 11px 0px 11px;
+      }
+
+      #type-selector label {
+        font-family: Roboto;
+        font-size: 13px;
+        font-weight: 300;
+      }
+      #target {
+        width: 345px;
+      }
+	  
+	 input#cID,#sID,#pID,#spID,#ssID,#ctID,#reqID,#manualBookID,#enID
+{
+		border: 0;
+		width:45%;
+		background-color:white;
+		font-size:auto;
+		color:grey;
+}
+#tHeader
+	{    
+		color: #900;
+		font-weight: bold;
+		background-color:grey;
+		width:450px;
+		text-align:center;
+	}
+td{text-align:center}
+table.tblFP{border:9;background-color:white;}
+
+td#descSession{text-align:left;}	
+
+*{
+	margin:0;
+	padding:0;
+}
+
+#container{
+	width:604px;
+	height:453px;
+	position:relative;
+}
+
+#container .prevButton{
+	height:72px;
+	width:68px;
+	position:absolute;
+	background:url('../images/buttons.png') no-repeat;
+	top:50%;
+	margin-top:-36px;
+	cursor:pointer;
+	z-index:2000;
+	background-position:left top;
+	left:0
+}
+
+#container .prevButton:hover{ background-position:left bottom;left:0;}
+
+#container .nextButton{
+	height:72px;
+	width:68px;
+	position:absolute;
+	background:url('../test2/img/next.png') no-repeat;
+	top:50%;
+	margin-top:-36px;
+	cursor:pointer;
+	z-index:2000;
+	background-position:right top;
+	right:0
+}
+
+#container .nextButton:hover{background-position:right bottom;right:0;}
+
+#container ul{
+	width:604px;
+	height:453px;
+	list-style:none outside none;
+	position:relative;
+	overflow:hidden;
+}
+
+#container li:first-child{
+	display:list-item;
+	position:absolute;
+}
+
+#container li{
+	position:absolute;
+	display:none;
+}
+
+

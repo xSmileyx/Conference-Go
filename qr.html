@@ -1,0 +1,48 @@
+ <html>
+ <body>
+  <img id="qrious">
+  <script src="./jscss/dist/umd/qrious.js"></script>
+  <script>
+  (function() {
+    var $background = document.querySelector('main form [name="background"]')
+    var $foreground = document.querySelector('main form [name="foreground"]')
+    var $level = document.querySelector('main form [name="level"]')
+    var $section = document.querySelector('main section')
+    var $size = document.querySelector('main form [name="size"]')
+    var $value = document.querySelector('main form [name="value"]')
+
+    var qr = window.qr = new QRious({
+      element: document.getElementById('qrious'),
+      size: 250,
+      value: 'google.com'
+    })
+
+    $background.addEventListener('change', function() {
+      qr.background = $background.value || null
+    })
+
+    $foreground.addEventListener('change', function() {
+      qr.foreground = $foreground.value || null
+    })
+
+    $level.addEventListener('change', function() {
+      qr.level = $level.value
+    })
+
+    $size.addEventListener('change', function() {
+      if (!$size.validity.valid) {
+        return
+      }
+
+      qr.size = $size.value || null
+
+      $section.style.minWidth = qr.size + 'px'
+    })
+
+    $value.addEventListener('input', function() {
+      qr.value = $value.value
+    })
+  })()
+</script>
+</body>
+</html>
