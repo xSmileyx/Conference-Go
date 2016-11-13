@@ -12,6 +12,81 @@
 	$logPhone = $_SESSION["log_phone"];
 	$logCountry = $_SESSION["log_country"];
 	
+	/*------------------------------------------*/	
+	// Pear Mail Library
+	include('Mail.php');
+	include('Mail/mime.php');
+	
+	$from = '<confeventmanager@gmail.com>';
+	$to = '<' .$logEmail. '>';
+	$subject = 'Booking successful!';
+	$crlf = "\n";
+	$mime = new Mail_mime($crlf);
+	
+	$html = "<html><body>";
+	//$html .= "Hello there, Rayner (Reference Number : 123456 )! You have successfully participated. ";
+
+	//$html .= $_SESSION["pBody"];
+	
+	if(isset($_SESSION["hBody"]))
+	{
+		$html .= $_SESSION["hBody"];
+	}
+	
+	if(isset($_SESSION["tBodies"]))
+	{
+		foreach ($_SESSION['tBodies'] as $result)
+		{
+			$html .= $result;
+		}
+		unset($_SESSION["tBodies"]);
+		
+	}
+	
+	$html .= "</body></html>";
+	
+	$headers = array(
+		'From' => $from,
+		'To' => $to,
+		'Subject' => $subject,
+		'Content-Type'  => 'text/html; charset=UTF-8'
+	);
+
+	$mime_params = array(
+	  'text_encoding' => '7bit',
+	  'text_charset'  => 'UTF-8',
+	  'html_charset'  => 'UTF-8',
+	  'head_charset'  => 'UTF-8',
+	  'encoding'      => 'quoted/printable'
+	);
+	
+	$mime->setHTMLBody($html);
+	$body = $mime->get($mime_params);
+			
+	$smtp = Mail::factory('smtp', array(
+			'host' => 'ssl://smtp.gmail.com',
+			'port' => '465',
+			'auth' => true,
+			'username' => 'confeventmanager@gmail.com',
+			'password' => 'conferencego'
+		));
+		
+
+	$body = quoted_printable_decode($body);	
+	$mail = $smtp->send($to, $headers, $body);
+	
+	if (PEAR::isError($mail)) {
+		//echo('<p>' . $mail->getMessage() . '</p>');
+		
+	} else {
+		//echo('<p>Message successfully sent!</p>');
+	}
+			
+		
+	/*------------------------------------------*/	
+	
+	
+	
 	//configuration script
 	include ('config.php');
 	
@@ -170,9 +245,7 @@
 	
 	</div><br>
 	<div class="no-print">
-	<button onclick="location.href ='../test/HotelTourAlone.php';" class="backButton" style="display:inline-block;" value="back">Back to Hotel / Tour Booking</button>
-
-	<button onclick="location.href ='chooseConfe.php';" class="backButton">Back to conference selection</button>
+	<button onclick="location.href ='../test2/HotelTourAlone.php';" class="backButton" style="display:inline-block;" value="back">Back to Hotel / Tour Booking</button>
 	<input type="button" class="pButton" onClick="window.print()" value="Print"></div>
 	
 </body>

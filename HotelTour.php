@@ -196,19 +196,10 @@ Licence URI: http://www.os-templates.com/template-terms
 								
 							document.getElementById('from').value = new Date().toDateInputValue();	
 							document.getElementById('from').setAttribute("min", new Date().toDateInputValue());
-							// $(document).ready(function(){
-									// $('#to').onsubmit(function(e){
-										
-										// var startDate = $('#from').val().replace('-','/');
-										// var endDate = $('#to').val().replace('-','/');
-
-										// if(startDate > endDate){
-										   // alert('It\'s high noon...');
-										   // e.preventDefault();
-										// }
-									
-									// });
-								// });	
+							
+							document.getElementById('to').value = new Date().toDateInputValue();	
+							document.getElementById('to').setAttribute("min", new Date().toDateInputValue());
+							
 							</script>
 							
 							<strong>Hotel</strong> : 
@@ -478,23 +469,7 @@ Licence URI: http://www.os-templates.com/template-terms
 							</td>";
 							echo "<td bgcolor='#FFFFFF' width='10%' style='vertical-align:top;'><br/><input type=\"checkbox\" id=\"chosenTour[]\" name=\"chosenTour[]\" value=\"$tourID\" style='margin-left:auto; margin-right:auto;' onchange=\"if(this.checked){document.getElementById('date" .$tourID. "').disabled = false; document.getElementById('date" .$tourID. "').value = new Date().toDateInputValue();	}else{document.getElementById('date" .$tourID. "').disabled = true; document.getElementById('date" .$tourID. "').value = '';}\"/> </tr>";
 							
-							echo "<script>
-								$(document).ready(function(){
-									$('#date" .$tourID. "').change(function(){
-										//alert(this.value);    
-										
-																	
-										//Date in full format alert(new Date(this.value));
-										
-										document.getElementById('date" .$tourID. "').setAttribute(\"min\", this.value);
-										
-										
-										var inputDate = new Date(this.value);
-									
-									});
-								});	
-								
-								
+							echo "<script>								
 							Date.prototype.toDateInputValue = (function() {
 								var local = new Date(this);
 								local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
@@ -503,7 +478,8 @@ Licence URI: http://www.os-templates.com/template-terms
 								
 								
 							
-							document.getElementById('date" .$tourID. "').setAttribute(\"min\", new Date().toDateInputValue());</script>";
+							document.getElementById('date" .$tourID. "').setAttribute(\"min\", new Date().toDateInputValue());
+							document.getElementById('date" .$tourID. "').setAttribute(\"max\", '".$row['validity']."');</script>";
 						}
 					}
 					echo "	</table>";
