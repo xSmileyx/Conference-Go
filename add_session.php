@@ -26,7 +26,7 @@
 			function datecheck()
 			{
 				var confstart = document.getElementById('start_date').value;
-				var confend = document.getElementById('end_date').value;	 
+				var confend = document.getElementById('end_date').value;
 				var sessionday = document.getElementById('session_day').value;
 				if (sessionday < confstart || sessionday > confend) 
 				{
@@ -63,16 +63,16 @@
 					$result = mysql_query($query);
 					echo "<select name='conf_id'>";
 					echo "<option value='0'>-Select-</option>";
-					
 					while($row = mysql_fetch_array($result))
-					{					
-    					echo "<option value='".$row['conf_id']."' >" .$row['conf_name'].  "</option>";
-						$confstart = $row['conf_startdate'];
-						$confend = $row['conf_enddate'];
+					{
+    					echo "<option value='".$row['conf_id']."' >" .$row['conf_name'].  "</option>";								
+						 echo '<input type="hidden" id="start_date" value="'.$row['conf_startdate'].'" />';
+						 echo '<input type="hidden" id="end_date" value="'.$row['conf_enddate'].'" />';
+					
 					}
 					echo "</select>";
-					echo "<input type='hidden' id='start_date' value='$confstart'/>";
-					echo "<input type='hidden' id='end_date' value='$confend'/>";					
+					
+					
 				?>
                 </td>
             </tr>

@@ -92,7 +92,9 @@ Licence URI: http://www.os-templates.com/template-terms
 				include ('config.php');
 				
 	
-				$SQLquery = "SELECT * FROM tblconference";
+				$SQLquery = "SELECT tblconference.conf_name, tblconference.conf_id
+				             FROM tblconference 
+							 WHERE conf_id NOT IN (SELECT conf_id FROM tblconf_participant WHERE p_id = '$logID')";
 
 				$QueryResult = $conn->query($SQLquery);
 				echo "<select name=\"pConference\" id=\"pConference\" class=\"twitter\" style=\"font-size:20px;width:100%;\"	>";//creates a select option dropdown box
@@ -106,15 +108,16 @@ Licence URI: http://www.os-templates.com/template-terms
 						while(($row = $QueryResult->fetch_assoc()) != false)
 						{
 							$conferenceName = $row["conf_name"];
+							$conferenceID = $row["conf_id"];
 						
-							echo "<option value = '".$conferenceName."'> " .$conferenceName. "</option>";
+							echo "<option value = '".$conferenceID."'> " .$conferenceName. "</option>";
 						}
 					}
 					
 				echo "</select>";
 				?><br>
 						
-			<input type="submit" class="myButton" name="submit" value=">>">
+			<input type="submit" style="float:right;" class="button" name="submit" value=">>">
 							
 							
 			</fieldset>

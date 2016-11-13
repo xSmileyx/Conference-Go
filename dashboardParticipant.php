@@ -85,12 +85,12 @@ Licence URI: http://www.os-templates.com/template-terms
 <div class="wrapper row3">
 
   <main class="hoc container clear"> 
-    <h2>Notifications</h2>
+    <h2>Message</h2>
     <div class="content three_quarter first" id="show"> 
 		No message selected.
     </div>
 
-    <div class="sidebar one_quarter" style="overflow:auto;  height:200px;"> 
+    <div class="sidebar one_quarter " style="overflow:auto;  height:200px;"> 
 
       <nav class="sdb_holder" >
         <ul>
@@ -144,23 +144,22 @@ function getMessage(id)
 }
 </script>
 
+
 <?php 	include 'selectdash.php'; ?>
 <!-- Top Background Image Wrapper -->
+<div class="bgded" style="background-image:url('images/demo/backgrounds/01.png');"> 
   <div class="wrapper row2">
     <div id="breadcrumb" class="hoc clear"> 
-	<div class="bgded"/>
-	<img style="width: 1500px; height: 100px;" src="uploads/<?php echo $result['banner_image']?>" alt="">
     </div>
   </div>
-
-
+</div>
 <div class="wrapper row3">
   <main class="hoc container clear"> 
     <!-- main body -->
 	
     <div class="one_half first">
 	
-	<img style="width: 480px; height: 380px;" class="inspace-10 borderedbox" src="uploads/<?php echo $result['event_image'] ?>" alt="">
+	<img class="inspace-10 borderedbox" src="uploads/<?php echo $result['event_image'] ?>" alt="">
 	
 	</div>
     <div class="one_half"><br>
@@ -188,19 +187,19 @@ function getMessage(id)
     </div>
     <article class="one_third first">
 		<a href="#">
-		<img style="width: 300px; height: 380px;" class="borderedbox inspace-10 btmspace-30" src="uploads/<?php echo $result['key_sp1'] ?>" alt="">
+		<img class="borderedbox inspace-10 btmspace-30" src="uploads/<?php echo $result['key_sp1'] ?>" alt="">
 		</a>
       <h2 class="heading font-x1"><?php echo $result['key_spname1'];  ?></h2>
       <p class="btmspace-30"></p>
     </article>
     <article class="one_third">		<a href="#">
-			<img style="width: 300px; height: 380px;" class="borderedbox inspace-10 btmspace-30" src="uploads/<?php echo $result['key_sp2'] ?>" alt="">
+			<img class="borderedbox inspace-10 btmspace-30" src="uploads/<?php echo $result['key_sp2'] ?>" alt="">
 		</a>
       <h2 class="heading font-x1"><?php echo $result['key_spname2']; ?></h2>
       <p class="btmspace-30"></p>
     </article>
     <article class="one_third"><a href="#">
-			<img style="width: 300px; height: 380px;" class="borderedbox inspace-10 btmspace-30" src="uploads/<?php echo $result['key_sp3'] ?>" alt="">
+			<img class="borderedbox inspace-10 btmspace-30" src="uploads/<?php echo $result['key_sp3'] ?>" alt="">
 		</a>
       <h2 class="heading font-x1"><?php echo $result['key_spname3'];  ?></h2>
       <p class="btmspace-30"></p>
@@ -211,11 +210,12 @@ function getMessage(id)
 </div>
 <div class="wrapper row3" style="opacity="0.5" ">
   <article class="hoc container clear"> 
-    <div class="one_half first"><img style="width: 480px; height: 380px;" class="borderedbox inspace-10 btmspace-30" src="uploads/<?php echo $result['venue_image'] ?>" alt=""></div>
+    <div class="one_half first"><img class="borderedbox inspace-10 btmspace-30" src="uploads/<?php echo $result['venue_image'] ?>" alt=""></div>
     <div class="one_half">
       <h2 class="heading"><?php echo $result['venue_name']; ?></h2>
-      <p><?php echo nl2br($result['details']); ?></p>
-
+      <p><?php echo $result['details']; ?></p>
+	  <p><address>Venue:  The Isthmus, Sejingkat,, 93050 Kuching, Sarawak, Malaysia</address></p>
+	  <p>Date:  June-03-2016  To  June-05-2016 <p>
       </ul>
       <footer>
         <ul class="nospace inline pushright">
@@ -227,6 +227,7 @@ function getMessage(id)
 </div>
 <div class="wrapper row4">
   <footer id="footer" class="hoc clear"> 
+    <!-- ################################################################################################ -->
     <div class="center btmspace-80">
       <h2 class="heading">Final Year Presentaion</h2>
       <p>Team members</p>
@@ -244,6 +245,7 @@ function getMessage(id)
     <div class="one_quarter">
       <h6 class="title">Samuel Hii Tuan Ong</h6>
     </div>
+    <!-- ################################################################################################ -->
   </footer>
 </div>
 <a id="backtotop" href="#top"><i class="fa fa-chevron-up"></i></a>
