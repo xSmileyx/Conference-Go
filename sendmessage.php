@@ -26,19 +26,22 @@ if(isset($_POST['submit']))
 	
 	$pID = $_POST["answer"];
 	$title = $_POST["title"];
+	
 	$msg = $_POST["message"];
+	$smsg = addslashes($msg);
+	
 	$emID = $_SESSION["user_id"];
 	$date = date("Y/m/d");
 	$stat = 0;
 	
 	$sql="INSERT INTO tblnotifications (p_id,notification_title,notification_message,em_id,date_received,status)
-		  VALUES('$pID','$title','$msg','$emID','$date','$stat')";
+		  VALUES('$pID','$title','$smsg','$emID','$date','$stat')";
 
 	mysql_query($sql);
 
 				
 
- echo 'Notification sent!';
+ echo 'Message sent!';
 echo '</br>';
  echo '<a href="dashboard.php">Click here to return to dashboard</a>';
 
