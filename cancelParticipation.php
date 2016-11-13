@@ -33,6 +33,11 @@ Licence URI: http://www.os-templates.com/template-terms
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <link href="layout/styles/layout.css" rel="stylesheet" type="text/css">
+
+	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  
+<!-- 	<script type="text/javascript" src="scripts/jquery-1.11.0.min.js"></script>
+ -->	  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body id="top">
 
@@ -84,7 +89,7 @@ Licence URI: http://www.os-templates.com/template-terms
 	<div id="body">
 				<form action="../test2/cancelParticipation.php" method="post" name="pCancel" id="pCancel">
 						<fieldset>
-							  <legend>Cancel Participation /  Booking</legend><?php
+							  <legend>Manage Participation /  Booking</legend><?php
 									
 									echo "<h1><center>Participation With Bookings</center></h1>";
 									//selects all user in the User table that have the status of the student and staff only because there's gonna be only one admin and he/she cannot delete himself/herself
@@ -107,16 +112,17 @@ Licence URI: http://www.os-templates.com/template-terms
 													$confID = $row["conf_id"];
 													$pID = $row["p_id"];
 													$refNum = $row["confpass_reference"];
+													
 											
 												}
 
 										}
 										
 											
-									$SQLquery = "SELECT tblconference.conf_id, tblconference.conf_name, tblconference.conf_startdate, tblconference.conf_enddate, tblconf_participant.conf_id, tblconf_participant.confpass_reference,tblconf_participant.p_id,tblconf_participant.purchase_date
+									$SQLquery = "SELECT *
 												 FROM tblconference,tblconf_participant
-												 WHERE tblconference.conf_id = tblconf_participant.conf_id AND tblconf_participant.p_id = '$logID'
-												 ORDER BY tblconf_participant.purchase_date DESC";
+												 WHERE tblconference.conf_id = tblconf_participant.conf_id AND tblconf_participant.p_id = '$logID'";
+							
 									$QueryResult =  $conn->query($SQLquery);
 									
 									if($QueryResult->num_rows == 0)
@@ -129,18 +135,26 @@ Licence URI: http://www.os-templates.com/template-terms
 											// output data of each row
 											while(($row = $QueryResult->fetch_assoc()) != false)
 											{
-												$ref = $row["confpass_reference"];
-												echo "<tr><td>".$row["confpass_reference"]. "</td>
+												@$ref = $row["confpass_reference"];
+												$passID = $row["pass_id"];
+												$dateSD=date_create("".$row['conf_startdate']."");
+												$dateED=date_create("".$row['conf_enddate']."");
+												$datePD=date_create("".$row['purchase_date']."");
+												$dateFSD = date_format($dateSD,"d/m/Y");
+												$dateFED = date_format($dateED,"d/m/Y");
+												$dateFPD = date_format($datePD,"d/m/Y");
+												
+												echo "<tr><td>".$ref. "<a data-id='" .$row['conf_id']. "' data-id2='" .$logID. "' data-id3='" .$ref. "' data-toggle=\"modal\" data-target=\"#myModal\" class=\"open-details\"><i class=\"fa fa-info-circle\" style='float:right; color:#373737' aria-hidden=\"true\"></i></a></td>
 														  <td>".$row['conf_name']. "</td>
-														  <td>".$row['conf_startdate']. "</td>
-														  <td>".$row['conf_enddate']. "</td>
-														  <td>".$row['purchase_date']. "</td>";
+														  <td>".$dateFSD. "</td>
+														  <td>".$dateFED. "</td>
+														  <td>".$dateFPD. "</td>";
 
 												?>
 												<td>													
 													<!--DELETE called from the LIST page--> <!--Prompt user for conformation before deletion-->
-													<a href = "../test2/cancelParticipation.php?act=delconf&id=<?php echo $ref; ?>"><img
-													src="img/delete.png" width="16" height="16" title="Delete record" onclick="return confirm('Are you sure that you want to cancel your participation?');"/></a>
+													<a href = "../test2/cancelParticipation.php?act=delconf&id=<?php echo @$ref; ?>&passid=<?php echo $passID; ?>&confid=<?php echo $row['conf_id']; ?>"><img
+													src="img/delete.png" width="16" height="16" title="Delete record" onclick="return confirm('Are you sure that you want to cancel your participation? It will delete the hotel and tour booking corresponding to it.');"/></a>
 												</td></tr>
 												<?php
 											}
@@ -148,9 +162,11 @@ Licence URI: http://www.os-templates.com/template-terms
 											
 										}
 						
-									$SQLquery = "SELECT tblbookingdetails.booking_id, tblbookingdetails.p_id, tblbookingdetails.confpass_reference, tblbookingdetails.hotel_name, tblbookingdetails.start_date, tblbookingdetails.end_date, tblconf_participant.p_id,tblconf_participant.confpass_reference,tblbookingdetails.booking_date
-												 FROM tblbookingdetails,tblconf_participant
-												 WHERE tblbookingdetails.p_id = '$logID' AND tblbookingdetails.confpass_reference = tblconf_participant.confpass_reference ";
+									@$SQLquery = "SELECT *
+												 FROM tblbookingdetails
+												 WHERE tblbookingdetails.p_id = '$logID' AND tblbookingdetails.confpass_reference != ''
+												 ORDER BY confpass_reference";
+												 
 									$QueryResult =  $conn->query($SQLquery);
 												 
 												 
@@ -162,21 +178,32 @@ Licence URI: http://www.os-templates.com/template-terms
 										{
 											echo "<br><table id=\"table1\" style=\"text-align: center;\">";
 											echo "<col width=\"150\"><col width=\"150\"><col width=\"150\"><col width=\"150\"><col width=\"150\"><col width=\"150\">";
-											echo "<tr id=tHeader style=\" background: gray;\"><th>Hotel Booking ID</th><th>Conference Reference Number</th><th>Hotel Name</th><th>Stay From</th><th>Stay Until</th><th>Booking Date</th><th>Actions</th></tr>";
+											echo "<tr id=tHeader style=\" background: gray;\"><th>Hotel Reservation Request ID</th><th>Conference Reference Number</th><th>Arrival Date</th><th>Departure Date</th><th>Booking Date</th><th>Actions</th></tr>";
 												
 											// output data of each row
 											while(($row = $QueryResult->fetch_assoc()) != false)
 											{
-												echo "<tr><td>" .$row['booking_id']. "</td><td>" .$row['confpass_reference']. "</td><td>".$row["hotel_name"]. "</td><td>".$row['start_date']. "</td><td>"  .$row['end_date']. "</td><td>" .$row['booking_date']. "</td>";		
+												$dateSD=date_create("".$row['start_date']."");
+												$dateED=date_create("".$row['end_date']."");
+												$dateBD=date_create("".$row['booking_date']."");
+												$dateFSD = date_format($dateSD,"d/m/Y");
+												$dateFED = date_format($dateED,"d/m/Y");
+												$dateFBD = date_format($dateBD,"d/m/Y");
+												
+												echo "<tr><td>" .$row['booking_id']. "<a data-id='" .$row['booking_id']. "' data-toggle=\"modal\" data-target=\"#myModal\" class=\"open-reservation-details\"><i class=\"fa fa-info-circle\" style='float:right; color:#373737' aria-hidden=\"true\"></i></a></td>
+													      <td>" .$row['confpass_reference']. "</td>
+														  <td>".$dateFSD. "</td>
+														  <td>"  .$dateFED. "</td>
+														  <td>" .$dateFBD. "</td>";		
 											
 											?>
 												<td>
 													<!--EDIT called from the LIST page-->
-													<a onclick =" window.open('HotelBookingUpdate.php?act=upd&id=<?php echo $row['confpass_reference']; ?>', '_blank', 'top=250,left=500,width=550,height=300');" >
+													<a data-id="<?php echo $row['booking_id']; ?> " data-id2="<?php echo $row['confpass_reference']?>" data-id3="<?php echo $row['room_id']?>" data-id4="<?php echo $row['room_requirments']?>" data-toggle="modal" data-target="#myModal" class="open-reservation-update">
 													<img src="img/edit.png" width="16" height="16" title="Edit Hotel Booking" /></a>
 														&nbsp; &nbsp;
 													<!--DELETE called from the LIST page--> <!--Prompt user for conformation before deletion-->
-													<a href = "../test2/cancelParticipation.php?act=delhotel&id=<?php echo $ref; ?>"><img
+													<a href = "../test2/cancelParticipation.php?act=delhotel&id=<?php echo $row['confpass_reference']; ?>"><img
 													src="img/delete.png" width="16" height="16" title="Cancel Hotel Booking" onclick="return confirm('Are you sure that you want to cancel your hotel booking?');"/></a>
 												</td></tr>
 												</td>
@@ -188,26 +215,27 @@ Licence URI: http://www.os-templates.com/template-terms
 											
 										}
 										
-											$SQLquery =	"SELECT confpass_reference
-												FROM tblbookingdetails
-												ORDER BY confpass_reference DESC";
-															//checks if there's any error on adding the values
-										if ($conn->query($SQLquery) == TRUE)
-											{
-												 //echo "<script language='javascript'>alert('$foodName succesfully added to the menu!');</script>"; 
-											}
-										else 
-											{
-												echo "<font color=red><p>Unable to align the records.<br />
-														Error Code ". $conn->errno." : ". $conn->error." </font></p>";
-											}
+											// $SQLquery =	"SELECT confpass_reference
+												// FROM tblbookingdetails
+												// ORDER BY confpass_reference DESC";
+															// //checks if there's any error on adding the values
+										// if ($conn->query($SQLquery) == TRUE)
+											// {
+												 // //echo "<script language='javascript'>alert('$foodName succesfully added to the menu!');</script>"; 
+											// }
+										// else 
+											// {
+												// echo "<font color=red><p>Unable to align the records.<br />
+														// Error Code ". $conn->errno." : ". $conn->error." </font></p>";
+											// }
 										
 										
 										
 										
-									$SQLquery = "SELECT tbltourbookingdetails.tourbooking_id, tbltourbookingdetails.p_id, tbltourbookingdetails.confpass_reference, tbltourbookingdetails.tour_name, tbltourbookingdetails.tour_location, tbltourbookingdetails.tour_duration, tbltourbookingdetails.tour_starttime,  tblconf_participant.p_id,tblconf_participant.confpass_reference,tbltourbookingdetails.booking_date
-												 FROM tbltourbookingdetails,tblconf_participant
-												 WHERE tbltourbookingdetails.p_id = '$logID' AND tbltourbookingdetails.confpass_reference = tblconf_participant.confpass_reference";
+									@$SQLquery = "SELECT *
+												 FROM tbltourbookingdetails
+												 WHERE tbltourbookingdetails.p_id = '$logID' AND tbltourbookingdetails.confpass_reference != ''
+												 ORDER BY confpass_reference";
 									$QueryResult =  $conn->query($SQLquery);
 												 
 												 
@@ -218,23 +246,41 @@ Licence URI: http://www.os-templates.com/template-terms
 									else
 										{
 											echo "<br><table id=\"table1\" style=\"text-align: center;\">";
-											echo "<col width=\"150\"><col width=\"150\"><col width=\"150\"><col width=\"300\"><col width=\"150\"><col width=\"150\"><col width=\"150\">";
-											echo "<tr id=tHeader style=\"background:gray;\"><th>Tour Booking ID</th><th>Conference Reference Number</th><th>Tour Name</th><th>Tour Location</th><th>Tour Duration(hours)</th><th>Tour Start Time</th><th>Booking Date</th><th>Actions</th></tr>";
+											echo "<tr id=tHeader style=\"background:gray;\"><th>Tour Booking ID</th><th>Conference Reference Number</th><th>Tour</th><th>Tour Start Day</th><th>Booking Date</th><th>Actions</th></tr>";
 									
 											// output data of each row
 											while(($row = $QueryResult->fetch_assoc()) != false)
 											{
-												echo "<tr><td>" .$row['tourbooking_id']. "</td><td>" .$row['confpass_reference']. "</td><td>".$row["tour_name"]. "</td><td>".$row['tour_location']. "</td><td>"  .$row['tour_duration']. "</td><td>"  .$row['tour_starttime']. "</td><td>" .$row['booking_date']. "</td>";		
+												$dateSD=date_create("".$row['tour_startday']."");
+												$dateBD=date_create("".$row['booking_date']."");
+												$dateFSD = date_format($dateSD,"d/m/Y");
+												$dateFBD = date_format($dateBD,"d/m/Y");
+												
+												echo "<tr><td>" .$row['tourbooking_id']. "</td>
+												<td>" .$row['confpass_reference']. "</td>
+												<td  width='50%'>
+													  <strong>Tour Name</strong>: " .$row["tour_name"]. "<a data-id='" .$row['tour_id']. "' data-toggle=\"modal\" data-target=\"#myModal\" class=\"open-tour-details\"><i class=\"fa fa-info-circle\" style='float:right; color:#373737' aria-hidden=\"true\"></i></a>
+													  <br />
+													  <strong>Location</strong>: " .$row['tour_location']. "
+													  <br/>
+													  <strong>Start Time</strong>: " .$row['tour_starttime']."
+													  <br/>
+													  <strong>Duration</strong>: " .$row['tour_duration']. " hour(s)
+												</td>
+												<td>"  .$dateFSD. "</td>
+												<td>" .$dateFBD. "</td>";
+
+																							
 											
 											?>
 												<td>
 													<!--EDIT called from the LIST page-->
-													<a onclick =" window.open('TourBookingUpdate.php?act=upd&id=<?php echo $row['confpass_reference']; ?>', '_blank', 'top=250,left=500,width=550,height=350');" >
+													<a data-id="<?php echo $row['tourbooking_id']; ?> " data-id2="<?php echo $row['confpass_reference']?>" data-id3="<?php echo $row['tour_id']?>" data-toggle="modal" data-target="#myModal" class="open-tour-update">
 													<img src="img/edit.png" width="16" height="16" title="Edit Hotel Booking" /></a>
 														&nbsp; &nbsp;
 													
 													<!--DELETE called from the LIST page--> <!--Prompt user for conformation before deletion-->
-													<a href = "../test2/cancelParticipation.php?act=deltour&id=<?php echo $ref; ?>"><img
+													<a href = "../test2/cancelParticipation.php?act=deltour&id=<?php echo  $row['confpass_reference'];?>&tid=<?php echo  $row['tourbooking_id'];?>"><img
 													src="img/delete.png" width="16" height="16" title="Cancel Hotel Booking" onclick="return confirm('Are you sure that you want to cancel your tour booking?');"/></a>
 												</td></tr>
 												</td>
@@ -259,34 +305,49 @@ Licence URI: http://www.os-templates.com/template-terms
 												
 											}
 											
+/*-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+											
 									echo "<hr><h1><center>Standalone Bookings</center></h1>";		
-									$SQLquery = "SELECT DISTINCT tblbookingdetails.booking_id, tblbookingdetails.p_id, tblbookingdetails.hotel_name, tblbookingdetails.start_date, tblbookingdetails.end_date, tblconf_participant.p_id,tblbookingdetails.booking_date
-												 FROM tblbookingdetails,tblconf_participant
-												 WHERE tblbookingdetails.p_id = '$logID' AND tblbookingdetails.confpass_reference IS NULL";
+									$SQLquery = "SELECT DISTINCT *
+												 FROM tblbookingdetails
+												 WHERE tblbookingdetails.p_id = '$logID' AND tblbookingdetails.confpass_reference IS NULL
+												 GROUP BY tblbookingdetails.booking_date DESC";
+												 
+												 
 									$QueryResult =  $conn->query($SQLquery);
 												 
 												 
 									if($QueryResult->num_rows == 0)
 										{
-											echo "<p style=\"text-align: center;\">No standalone hotel booking records to display.</p>";//displays the message if there are no user registered
+											echo "<p style=\"text-align: center;\">No standalone hotel reservation records to display.</p>";//displays the message if there are no user registered
 										}
 									else
 										{
 											echo "<table border=\"1\" style=\"text-align: center;\">";
 											echo "<col width=\"150\"><col width=\"150\"><col width=\"150\"><col width=\"150\"><col width=\"150\"><col width=\"150\">";
-											echo "<tr id=tHeader style=\" background: gray;\"><th>Hotel Booking ID</th><th>Hotel Name</th><th>Stay From</th><th>Stay Until</th><th>Booking Date</th><th>Actions</th></tr>";
+											echo "<tr id=tHeader style=\" background: gray;\"><th>Hotel Reservation Request ID</th><th>Arrival Date</th><th>Departure Date</th><th>Booking Date</th><th>Actions</th></tr>";
 												
 											// output data of each row
 											while(($row = $QueryResult->fetch_assoc()) != false)
 											{
-												echo "<tr><td>" .$row['booking_id']. "</td><td>".$row["hotel_name"]. "</td><td>".$row['start_date']. "</td><td>"  .$row['end_date']. "</td><td>" .$row['booking_date']. "</td>";		
+												$dateSD=date_create("".$row['start_date']."");
+												$dateED=date_create("".$row['end_date']."");
+												$dateBD=date_create("".$row['booking_date']."");
+												$dateFSD = date_format($dateSD,"d/m/Y");
+												$dateFED = date_format($dateED,"d/m/Y");
+												$dateFBD = date_format($dateBD,"d/m/Y");
+												
+												echo "<tr ><td>" .$row['booking_id']. "<a data-id='" .$row['booking_id']. "' data-toggle=\"modal\" data-target=\"#myModal\" class=\"open-reservation-details\"><i class=\"fa fa-info-circle\" style='float:right; color:#373737' aria-hidden=\"true\"></i></a></td>														
+														   <td>".$dateFSD. "</td>
+														   <td>"  .$dateFED. "</td>
+														   <td>" .$dateFBD. "</td>";		
 																																	?>
 												<td>
 													<!--EDIT called from the LIST page-->
-													<a onclick =" window.open('HotelBookingUpdate.php?act=upd&hotelID=<?php echo $row['booking_id']; ?>', '_blank', 'top=250,left=500,width=550,height=200');" >
+													<a data-id="<?php echo $row['booking_id']; ?> " data-id2="" data-id3="<?php echo $row['room_id']?>" data-id4="<?php echo $row['room_requirments']?>" data-toggle="modal" data-target="#myModal" class="open-reservation-update">
 													<img src="img/edit.png" width="16" height="16" title="Edit Hotel Booking" /></a>
 														&nbsp; &nbsp;
-													
+														
 													<!--DELETE called from the LIST page--> <!--Prompt user for conformation before deletion-->
 													<a href = "../test2/cancelParticipation.php?act=delH&id=<?php echo $row['booking_id']; ?>"><img
 													src="img/delete.png" width="16" height="16" title="Cancel Hotel Booking" onclick="return confirm('Are you sure that you want to cancel your standalone hotel booking?');"/></a>
@@ -301,8 +362,7 @@ Licence URI: http://www.os-templates.com/template-terms
 										}
 										
 											$SQLquery =	"SELECT confpass_reference
-												FROM tblbookingdetails
-												ORDER BY confpass_reference DESC";
+												FROM tblbookingdetails";
 															//checks if there's any error on adding the values
 										if ($conn->query($SQLquery) == TRUE)
 											{
@@ -314,8 +374,8 @@ Licence URI: http://www.os-templates.com/template-terms
 														Error Code ". $conn->errno." : ". $conn->error." </font></p>";
 											}
 									
-									$SQLquery = "SELECT DISTINCT tbltourbookingdetails.tourbooking_id, tbltourbookingdetails.p_id, tbltourbookingdetails.confpass_reference, tbltourbookingdetails.tour_name, tbltourbookingdetails.tour_location, tbltourbookingdetails.tour_duration, tbltourbookingdetails.tour_starttime,  tblconf_participant.p_id,tbltourbookingdetails.booking_date
-												 FROM tbltourbookingdetails,tblconf_participant
+									$SQLquery = "SELECT DISTINCT *
+												 FROM tbltourbookingdetails
 												 WHERE tbltourbookingdetails.p_id = '$logID' AND tbltourbookingdetails.confpass_reference IS NULL";
 									$QueryResult =  $conn->query($SQLquery);
 												 
@@ -328,17 +388,33 @@ Licence URI: http://www.os-templates.com/template-terms
 										{
 											echo "<br><table border=\"1\" style=\"text-align: center;\">";
 											echo "<col width=\"150\"><col width=\"150\"><col width=\"200\"><col width=\"150\"><col width=\"150\"><col width=\"150\"><col width=\"150\">";
-											echo "<tr id=tHeader style=\"background:gray;\"><th>Tour Booking ID</th><th>Tour Name</th><th>Tour Location</th><th>Tour Duration(hours)</th><th>Tour Start Time</th><th>Booking Date</th><th>Actions</th></tr>";
+											echo "<tr id=tHeader style=\"background:gray;\"><th>Tour Booking ID</th><th>Tour</th><th>Tour Start Day</th><th>Booking Date</th><th>Actions</th></tr>";
 									
 											// output data of each row
 											while(($row = $QueryResult->fetch_assoc()) != false)
 											{
-												echo "<tr><td>" .$row['tourbooking_id']. "</td><td>".$row["tour_name"]. "</td><td>".$row['tour_location']. "</td><td>"  .$row['tour_duration']. "</td><td>"  .$row['tour_starttime']. "</td><td>" .$row['booking_date']. "</td>";		
-											
-																						?>
+												$dateSD=date_create("".$row['tour_startday']."");
+												$dateBD=date_create("".$row['booking_date']."");
+												$dateFSD = date_format($dateSD,"d/m/Y");
+												$dateFBD = date_format($dateBD,"d/m/Y");
+												
+												echo "<tr><td>" .$row['tourbooking_id']. "</td>
+												<td  width='50%'>
+													  <strong>Tour Name</strong>: " .$row["tour_name"]. "<a data-id='" .$row['tour_id']. "' data-toggle=\"modal\" data-target=\"#myModal\" class=\"open-tour-details\"><i class=\"fa fa-info-circle\" style='float:right; color:#373737' aria-hidden=\"true\"></i></a>
+													  <br />
+													  <strong>Location</strong>: " .$row['tour_location']. "
+													  <br/>
+													  <strong>Start Time</strong>: " .$row['tour_starttime']."
+													  <br/>
+													  <strong>Duration</strong>: " .$row['tour_duration']. " hour(s)
+												</td>
+												<td>".$dateFSD. "</td>
+												<td>" .$dateFBD. "</td>";
+												
+												?>
 												<td>
 													<!--EDIT called from the LIST page-->
-													<a onclick =" window.open('TourBookingUpdate.php?act=upd&tourID=<?php echo $row['tourbooking_id']; ?>', '_blank', 'top=250,left=500,width=500,height=270');" >
+													<a data-id="<?php echo $row['tourbooking_id']; ?> " data-id2="" data-id3="<?php echo $row['tour_id']?>" data-toggle="modal" data-target="#myModal" class="open-tour-update">
 													<img src="img/edit.png" width="16" height="16" title="Edit Hotel Booking" /></a>
 														&nbsp; &nbsp;
 													
@@ -356,8 +432,7 @@ Licence URI: http://www.os-templates.com/template-terms
 										}
 										
 											$SQLquery =	"SELECT confpass_reference
-												FROM tbltourbookingdetails
-												ORDER BY confpass_reference DESC";
+												FROM tbltourbookingdetails";
 															//checks if there's any error on adding the values
 										if ($conn->query($SQLquery) == TRUE)
 											{
@@ -375,6 +450,160 @@ Licence URI: http://www.os-templates.com/template-terms
 						</fieldset>
 				</form>
 			</div>
+			
+		
+
+
+			
+	 <!-- Modal -->
+  <div class="modal hide" data-easein="fadeInDown" data-easeout="fadeOutDown" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" id="myModal" >
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i></button>
+        </div>
+        <div class="modal-body">
+		  <div id="details"></div>
+        </div><br><br>
+        <!--<div class="modal-footer">
+	
+        </div>-->
+      </div>
+    </div>
+  </div>
+  
+  
+	  <script>
+	  $(document).on("click", ".open-details", function () {
+		 var cID = $(this).data('id');
+		 var pID = $(this).data('id2');
+		 var refID = $(this).data('id3');
+		 
+			 if (window.XMLHttpRequest) {
+			// code for IE7+, Firefox, Chrome, Opera, Safari
+				xmlhttp = new XMLHttpRequest();
+			} else {
+				// code for IE6, IE5
+				xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					document.getElementById("details").innerHTML = this.responseText;
+				}
+			};
+			xmlhttp.open("GET","fetchsessions.php?cid="+cID+"&pid="+pID+"&refid="+refID,true);
+			xmlhttp.send();
+	});
+	  </script>			
+	    <script>
+	  $(document).on("click", ".open-tour-details", function () {
+		 var pID = $(this).data('id');
+		 
+			 if (window.XMLHttpRequest) {
+			// code for IE7+, Firefox, Chrome, Opera, Safari
+				xmlhttp = new XMLHttpRequest();
+			} else {
+				// code for IE6, IE5
+				xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					document.getElementById("details").innerHTML = this.responseText;
+				}
+			};
+			xmlhttp.open("GET","fetchtourdetails.php?rowid="+pID,true);
+			xmlhttp.send();
+	});
+	  </script>	
+	  
+	    <script>
+	  $(document).on("click", ".open-reservation-details", function () {
+		 var pID = $(this).data('id');
+		 
+			 if (window.XMLHttpRequest) {
+			// code for IE7+, Firefox, Chrome, Opera, Safari
+				xmlhttp = new XMLHttpRequest();
+			} else {
+				// code for IE6, IE5
+				xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					document.getElementById("details").innerHTML = this.responseText;
+				}
+			};
+			xmlhttp.open("GET","fetchreservationdetails.php?rowid="+pID,true);
+			xmlhttp.send();
+	});
+	  </script>		  
+
+	    <script>
+	  $(document).on("click", ".open-tour-update", function () {
+		 var tbID = $(this).data('id');
+		 var cPass = $(this).data('id2');
+		 var tID = $(this).data('id3');
+		 
+			 if (window.XMLHttpRequest) {
+			// code for IE7+, Firefox, Chrome, Opera, Safari
+				xmlhttp = new XMLHttpRequest();
+			} else {
+				// code for IE6, IE5
+				xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					document.getElementById("details").innerHTML = this.responseText;
+				}
+			};
+			
+		if(cPass == "")
+		{
+			xmlhttp.open("GET","fetchUpdateTour.php?tbid="+tbID+"&tid="+tID,true);
+			xmlhttp.send();
+		}
+		else
+		{
+			xmlhttp.open("GET","fetchUpdateTour.php?tbid="+tbID+"&cpass="+cPass+"&tid="+tID,true);
+			xmlhttp.send();
+		}
+	});
+	  </script>		 
+
+	    <script>
+	  $(document).on("click", ".open-reservation-update", function () {
+		 var bID = $(this).data('id');
+		 var conPass = $(this).data('id2');
+		 var rID = $(this).data('id3');
+		 var rRequirement = $(this).data('id4');
+		 
+			 if (window.XMLHttpRequest) {
+			// code for IE7+, Firefox, Chrome, Opera, Safari
+				xmlhttp = new XMLHttpRequest();
+			} else {
+				// code for IE6, IE5
+				xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					document.getElementById("details").innerHTML = this.responseText;
+				}
+			};
+			
+		if(conPass == "")
+		{
+			xmlhttp.open("GET","fetchUpdateReservation.php?bid="+bID+"&rid="+rID+"&rrequirement="+rRequirement,true);
+			xmlhttp.send();
+		}
+		else
+		{
+			xmlhttp.open("GET","fetchUpdateReservation.php?bid="+bID+"&cpass="+conPass+"&rid="+rID+"&rrequirement="+rRequirement,true);
+			xmlhttp.send();
+		}
+	});
+	  </script>		  
+	
 	
     <!-- / main body -->
     <div class="clear"></div>
@@ -444,55 +673,159 @@ Licence URI: http://www.os-templates.com/template-terms
 @$get_act = $_REQUEST['act'];
 if($get_act == "delconf")
 {
-	@$get_conf_id = $_GET['id'];
+	@$get_conf_ref = $_GET['id'];
+	@$get_pass_id = $_GET['passid'];
+	@$get_conf_id = $_GET['confid'];
+	
+	$SQLquery = "SELECT * FROM tblconf_participant WHERE confpass_reference = '$get_conf_ref'";
+			
+			$QueryResult =  $conn->query($SQLquery);
+			
+				if($QueryResult->num_rows == 0)
+					{
+						echo "<script language='javascript'>alert('Reference Number not found!');</script>";
+					}
+				else
+					{
+						// output data of each row
+						while(($row = $QueryResult->fetch_assoc()) != false)
+							{
 
-	$SQLquery = "DELETE FROM tblconf_participant WHERE confpass_reference = '$get_conf_id'";
+								$purchaseDate = $row["purchase_date"];
+								
+								$currentDate = date('Y-m-d');
+								$expiryPeriod = strtotime("+5 days");
+								$expiryDate = date('Y-m-d', strtotime($purchaseDate. ' + 5 days'));
+								
+								if($currentDate > $expiryDate)
+									{
+										echo "<script language='javascript'>alert('Reference Number : $get_conf_ref has reached it\'s refundable date! \\nExpired date : $expiryDate');</script>";
+									}
+								else
+									{
+									
+										$SQLquery = "DELETE FROM tblconf_participant WHERE confpass_reference = '$get_conf_ref'";
+										$conn->query($SQLquery);
+										
+										/*------------------------------------------------------------------------------------------------------------------*/
+										
+										$SQLquery = "UPDATE tblpasstype SET pass_availability = pass_availability + 1 WHERE pass_id = '$get_pass_id'";
+										$conn->query($SQLquery);
+										
+										/*------------------------------------------------------------------------------------------------------------------*/
 
-	if($conn->query($SQLquery) === TRUE)
-	{
- 		echo "<script language='javascript'>alert('Reference Number: $get_conf_id has been successfully deleted! The Event Manager will contact you for the disclosure of refund.');</script>";
-		echo "<script>window.top.location ='../test2/cancelParticipation.php';</script>";   
-	}
-	else
-	{
-		echo $sql;
-		echo "<br><font color = \"red\">Failed to delete a record.</font>" .mysql_error();
-	} 
+										$SQLquery = "DELETE FROM tblsession_participant WHERE p_id = '$logID' AND conf_id = '$get_conf_id'";
+
+										if($conn->query($SQLquery) === TRUE)
+										{
+											echo "<script language='javascript'>alert('Reference Number: $get_conf_ref has been successfully deleted! \\nThe Event Manager will contact you for the disclosure of refund.');</script>";
+											echo "<script>window.top.location ='../test2/cancelParticipation.php';</script>";   
+										}
+										else
+										{
+											echo $sql;
+											echo "<br><font color = \"red\">Failed to delete a record.</font>" .mysql_error();
+										} 
+									}
+							}
+					}
 }
 if($get_act == "delhotel")
 {
 	@$get_conf_id = $_GET['id'];
+	
+		$SQLquery = "SELECT * FROM tblbookingdetails WHERE confpass_reference = '$get_conf_id'";
+			
+			$QueryResult =  $conn->query($SQLquery);
+			
+				if($QueryResult->num_rows == 0)
+					{
+						echo "<script language='javascript'>alert('Reference Number not found!');</script>";
+					}
+				else
+					{
+						// output data of each row
+						while(($row = $QueryResult->fetch_assoc()) != false)
+							{
 
-	$SQLquery = "DELETE FROM tblbookingdetails WHERE confpass_reference = '$get_conf_id'";
+								$bookingDate = $row["booking_date"];
+								
+								$currentDate = date('Y-m-d');
+								$expiryPeriod = strtotime("+5 days");
+								$expiryDate = date('Y-m-d', strtotime($bookingDate. ' + 5 days'));
+								
+								if($currentDate > $expiryDate)
+									{
+										echo "<script language='javascript'>alert('Reference Number : $get_conf_id has reached it\'s refundable date! \\nExpired date : $expiryDate');</script>";
+									}
+								else
+									{
+	
+										$SQLquery = "DELETE FROM tblbookingdetails WHERE confpass_reference = '$get_conf_id'";
 
-	if($conn->query($SQLquery) === TRUE)
-	{
- 		//echo "<script language='javascript'>alert('Reference Number: $get_conf_id has been successfully deleted! The Event Manager will contact you for the disclosure of refund.');</script>";
-		echo "<script>window.top.location ='../test2/cancelParticipation.php';</script>";   
-	}
-	else
-	{
-		echo $sql;
-		echo "<br><font color = \"red\">Failed to delete a record.</font>" .mysql_error();
-	} 
-}
+										if($conn->query($SQLquery) === TRUE)
+										{
+											//echo "<script language='javascript'>alert('Reference Number: $get_conf_id has been successfully deleted! The Event Manager will contact you for the disclosure of refund.');</script>";
+											echo "<script>window.top.location ='../test2/cancelParticipation.php';</script>";   
+										}
+										else
+										{
+											echo $sql;
+											echo "<br><font color = \"red\">Failed to delete a record.</font>" .mysql_error();
+										}
+									}
+							}
+					}
+}					
+
 if($get_act == "deltour")
 {
 	@$get_conf_id = $_GET['id'];
+	@$get_tour_id = $_GET['tid'];
+	$SQLquery = "SELECT * FROM tbltourbookingdetails WHERE confpass_reference = '$get_conf_id'";
+			
+			$QueryResult =  $conn->query($SQLquery);
+			
+				if($QueryResult->num_rows == 0)
+					{
+						echo "<script language='javascript'>alert('Reference Number not found!');</script>";
+					}
+				else
+					{
+						// output data of each row
+						while(($row = $QueryResult->fetch_assoc()) != false)
+							{
 
-	$SQLquery = "DELETE FROM tbltourbookingdetails WHERE confpass_reference = '$get_conf_id'";
+								$bookingDate = $row["booking_date"];
+								
+								$currentDate = date('Y-m-d');
+								$expiryPeriod = strtotime("+5 days");
+								$expiryDate = date('Y-m-d', strtotime($bookingDate. ' + 5 days'));
+								
+								if($currentDate > $expiryDate)
+									{
+										echo "<script language='javascript'>alert('Tour booking ID : $get_tour_id has reached it\'s refundable date! \\nExpired date : $expiryDate');</script>";
+									}
+								else
+									{
+										$SQLquery = "DELETE FROM tbltourbookingdetails WHERE tourbooking_id = '$get_tour_id'";
 
-	if($conn->query($SQLquery) === TRUE)
-	{
- 		//echo "<script language='javascript'>alert('Reference Number: $get_conf_id has been successfully deleted! The Event Manager will contact you for the disclosure of refund.');</script>";
-		echo "<script>window.top.location ='../test2/cancelParticipation.php';</script>";   
-	}
-	else
-	{
-		echo $sql;
-		echo "<br><font color = \"red\">Failed to delete a record.</font>" .mysql_error();
-	} 
+										if($conn->query($SQLquery) === TRUE)
+										{
+											//echo "<script language='javascript'>alert('Reference Number: $get_conf_id has been successfully deleted! The Event Manager will contact you for the disclosure of refund.');</script>";
+											echo "<script>window.top.location ='../test2/cancelParticipation.php';</script>";   
+										}
+										else
+										{
+											echo $sql;
+											echo "<br><font color = \"red\">Failed to delete a record.</font>" .mysql_error();
+										} 
+										
+									}
+							}
+					}
 }
+
 if($get_act == "delH")
 {
 	@$get_id = $_GET['id'];
@@ -501,7 +834,7 @@ if($get_act == "delH")
 
 	if($conn->query($SQLquery) === TRUE)
 	{
- 		//echo "<script language='javascript'>alert('Reference Number: $get_conf_id has been successfully deleted! The Event Manager will contact you for the disclosure of refund.');</script>";
+		//echo "<script language='javascript'>alert('Reference Number: $get_conf_id has been successfully deleted! The Event Manager will contact you for the disclosure of refund.');</script>";
 		echo "<script>window.top.location ='../test2/cancelParticipation.php';</script>";   
 	}
 	else
@@ -510,6 +843,7 @@ if($get_act == "delH")
 		echo "<br><font color = \"red\">Failed to delete a record.</font>" .mysql_error();
 	} 
 }
+					
 if($get_act == "delT")
 {
 	@$get_id = $_GET['id'];
