@@ -14,7 +14,14 @@
 				if (pp2!=pp1) 
 				{
 					alert('Password do not match. Please enter again');
+					return false;
 				} 
+				if(confirm('Do you want to add Event manager?'))
+				{
+					return true;
+				}
+				else
+					return false;
 			}
 			</script>
 </head>
@@ -32,7 +39,7 @@
 	  <div id="box">
 	<div id="addcater">
     	<h1 align="center">Add Event manager</h1>
-		<form action="addeventmanager.php" method="post" name="addeventmanager" align="center">
+		<form onsubmit="return pcheck();" action="addeventmanager.php" method="post" name="addeventmanager" align="center">
         	<table align="center">
         		<tr>
                 	<td width="160" align="left" valign="top"><p>Username</p></td>
@@ -44,7 +51,7 @@
                 </tr>
 				<tr>
                 	<td width="160" align="left" valign="top"><p>Retype Password</p></td>
-       	            <td><input type="text" name="em_password2" class="twitter" id="p2" onblur="pcheck()" required /></td>
+       	            <td><input type="text" name="em_password2" class="twitter" id="p2" required /></td>
                 </tr>
         		<tr>
                 	<td width="160" align="left" valign="top"><p>First name</p></td>
@@ -56,7 +63,7 @@
                 </tr>
         		<tr>
                 	<td width="160" align="left" valign="top"><p>Phone</p></td>
-       	            <td><input type="tel" name="em_phone" class="twitter" required /></td>
+       	            <td><input type="tel" name="em_phone" class="twitter" pattern="^[0-9]{7,15}$"  title="phone number must be between 7 and 15 numbers" required /></td>
                 </tr>
         		<tr>
                 	<td width="160" align="left" valign="top"><p>Email</p></td>

@@ -5,6 +5,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <link href="layout/styles/layout.css" rel="stylesheet" type="text/css" media="all">
+
+<script text="text/javascript">
+
+</script>
 </head>
 <body id="top"> <?php if($_SESSION["user_name"]) { ?>
 
@@ -24,19 +28,19 @@
         	<table align="center">
         		<tr>
                 	<td width="160" align="left" valign="top"><p>Caterer's name</p></td>
-       	            <td><input type="text" name="caterer_name" class="twitter" placeholder="Enter caterer name" required /></td>
+       	            <td><input type="text" name="caterer_name"  id="caterer_name" class="twitter" placeholder="Enter caterer name" required /></td>
                 </tr>	
             	<tr>
                 	<td align="left" valign="top"><p>Caterer's Phone number</p></td>
-       	            <td><input type="tel" name="caterer_phone" class="twitter" placeholder="Enter caterer phone" required /></td>
+       	            <td><input type="tel" name="caterer_phone" id="caterer_phone" class="twitter" placeholder="Enter caterer phone" pattern="^[0-9]{7,15}$"  title="phone number must be between 7 and 15 numbers" required="required" /></td>
                 </tr>
                 <tr>
                 	<td align="left" valign="top"><p>Caterer's Email</p></td>
-       	            <td><input type="email" name="caterer_email" class="twitter" placeholder="Email"  /></td>
+       	            <td><input type="email" name="caterer_email" id="caterer_email" class="twitter" placeholder="Email" required="required"/></td>
                 </tr>
             	<tr>
                 	<td height="60"></td>
-                	<td><div style="float:left;"><input type="reset" name="reset" class="button" value="Clear"/></div><div style="text-align:center;"><input type="submit" name="submit" class="button" value="Submit"/></div></td>
+                	<td><div style="float:left;"><input type="reset" name="reset" class="button" value="Clear"/></div><div style="text-align:center;"><input type="submit" name="submit" class="button" value="Submit" onclick="return formvalidate();"/></div></td>
                 </tr>
             </table>
         </form>

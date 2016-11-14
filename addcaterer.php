@@ -35,6 +35,10 @@ $result=mysql_query($insertInto);
 if($result){
 echo 'Caterer has been added successfully';
 echo '</br>';
+echo '</br>';
+echo '<a href="add_caterer.php">Click here to return to add another caterer</a>';
+echo '</br>';
+echo '</br>';
 echo '<a href="dashboardadmin.php">Click here to return to dashboard</a>';
 
 

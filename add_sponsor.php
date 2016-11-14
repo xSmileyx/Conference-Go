@@ -24,7 +24,7 @@
 		<form action="addsponsor.php" method="post" enctype="multipart/form-data">
         	<table align="center">
             	<tr>
-                	<td width="100" align="left" valign="top"><p>Sponsor name</p></td>
+                	<td width="180" align="left" valign="top"><p>Sponsor name</p></td>
                     <td><input type="text" name="sponsor_name" class="twitter" placeholder="Enter name" required/></td>
                 </tr>
                 
@@ -35,7 +35,7 @@
                 
                 <tr>
                 	<td align="left" valign="top"><p>Phone</p></td>
-                    <td><input type="tel" name="sponsor_phone" class="twitter" placeholder="Phone number" required /></td>
+                    <td><input type="tel" name="sponsor_phone" class="twitter" placeholder="Phone number" pattern="^[0-9]{7,15}$"  title="phone number must be between 7 and 15 numbers" required /></td>
                 </tr>
                 
                 <tr>

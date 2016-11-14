@@ -25,7 +25,6 @@
           <ul>
             <li><a href="add_conference.php">Add conference</a></li>
 			<li><a href="manage_conference.php?page=1">Edit or Delete conference</a></li>
-			<li><a href="add_confspeaker.php">Add conference speaker</a></li>
 			<li><a href="add_confsponsor.php">Add conference sponsor</a></li>
 			<li><a href="add_passtype.php">Add pass type</a></li>
 			<li><a href="add_session.php">Add session</a></li>
@@ -75,7 +74,8 @@
             <li><a href="add_hotel.php">Add Hotel</a></li>
             <li><a href="add_room.php">Add Hotel Room</a></li>
 			<li><a href="add_notifications.php">Add Notification</a></li>
-			<li><a href="dash_edit.php">Edit dashboard</a></li>
+			<li><a href="add_dasboard.php">Add Conference Page</a></li>
+			<li><a href="viewdashlist.php">Manage Conference pages</a></li>
 			<li><a href="add_eventmanager.php">Add event manager</a></li>
 			<li><a href="dashboard1.php">View as participant</a></li>
 		  </ul>

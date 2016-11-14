@@ -37,7 +37,14 @@ VALUES('','$conf_id','$speaker_id','$session_day','$session_starttime','$session
 $result=mysql_query($insertInto);
 
 if($result){
+	$query="INSERT INTO tblconf_speaker VALUES('',$conf_id,$speaker_id)";
+	$result=mysql_query($query);
+	
 echo 'Session has been added successfully';
+echo '</br>';
+echo '</br>';
+echo '<a href="add_session.php">Click here to add another session</a>';
+echo '<br>';
 echo '</br>';
 echo '<a href="dashboardadmin.php">Click here to return to dashboard</a>';
 
