@@ -40,13 +40,92 @@ Licence URI: http://www.os-templates.com/template-terms
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <link href="layout/styles/layout.css" rel="stylesheet" type="text/css" media="all">
+	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  
+<!-- 	<script type="text/javascript" src="scripts/jquery-1.11.0.min.js"></script>
+ -->	  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
 </head>
+<style>
+
+
+.dropbtn {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+.dropdown:hover .dropbtn {
+    background-color: red;
+}
+
+.dropdown {
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+	
+}
+
+::-webkit-scrollbar { 
+    display: none; 
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1; cursor: pointer;}
+
+.dropdown:hover .dropdown-content {
+	cursor: hand;
+    display: block;
+}
+</style>
+
 <body id="top">
 <div class="wrapper row0">
   <div id="topbar" class="hoc clear"> 
     <div class="fl_right">
       <ul class="nospace inline pushright">
-	  		<li><i class="fa fa-sign-in"></i> <a href="Logout.php">Log out</a></li>
+	  		 <li class="dropdown"><i class="fa fa-envelope"></i> Inbox
+				<div class="dropdown-content" style='overflow-y:scroll; height:200px; '>
+
+				<?php
+					$SQLquery = "SELECT * FROM tblnotifications WHERE p_id = '$logID'";
+					$QueryResult = $conn->query($SQLquery);
+					
+					if($QueryResult->num_rows == 0)
+						{
+							echo "<a>No messages at the moment</a>";
+							
+						}
+					else
+						{
+							while(($row = $QueryResult->fetch_assoc()) != false)
+							{
+								$title = $row["notification_title"];
+							
+								echo "<a data-id=\"".$row['n_id']."\" data-toggle=\"modal\" data-target=\"#myMsgModal\" class=\"open-message\">" .$title. "</a>";
+							}
+							
+						}
+		?>
+				 
+				</div>
+			  </li>
+			  <li><i class="fa fa-sign-in"></i> <a href="Logout.php">Log out</a></li>
       </ul>
     </div>
     <div class="fl_right">
@@ -63,7 +142,7 @@ Licence URI: http://www.os-templates.com/template-terms
   <header id="header" class="hoc clear"> 
     
     <div id="logo" class="fl_left">
-       <h1><a href="../test/dashboardParticipant.php">Conference management system</a></h1>
+       <h1><a href="../test2/dashboardParticipant.php">Conference management system</a></h1>
     </div>
     
     <nav id="mainav" class="fl_right">
@@ -72,7 +151,7 @@ Licence URI: http://www.os-templates.com/template-terms
         <li><a href="dashboardParticipant.php">Home</a></li>
         <li><a href="chooseConfe.php">Participate</a></li>
 		<li><a href="HotelTourAlone.php">Hotel / Tour Booking</a></li>
-		<li><a href="cancelParticipation.php">Cancel Participation & Booking</a></li>
+		<li><a href="cancelParticipation.php">Manage Participation & Bookings</a></li>
 		<li><a href="Feedback.php">Provide Feedback</a>
 		<li><a  href="Enquiries.php">Send Enquiries</a></li>	
 
@@ -81,86 +160,22 @@ Licence URI: http://www.os-templates.com/template-terms
   
   </header>
 
-  
-<div class="wrapper row3">
-
-  <main class="hoc container clear"> 
-    <h2>Notifications</h2>
-    <div class="content three_quarter first" id="show"> 
-		No message selected.
-    </div>
-
-    <div class="sidebar one_quarter" style="overflow:auto;  height:200px;"> 
-
-      <nav class="sdb_holder" >
-        <ul>
-		<?php
-				$SQLquery = "SELECT * FROM tblnotifications";
-				$QueryResult = $conn->query($SQLquery);
-				
-				if($QueryResult->num_rows == 0)
-					{
-						echo "<li>No notifications at the moment</li>";
-					}
-				else
-					{
-						while(($row = $QueryResult->fetch_assoc()) != false)
-						{
-							$title = $row["notification_title"];
-						
-							echo '<li><a onclick="getMessage('.$row["n_id"].')">' .$title. '</a></li>';
-						}
-					}
-				
-				
-		
-		?>
-		
-		</ul>
-      </nav>
-    
-
-    <div class="clear"></div>
-  </main>
-</div>
-
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-<script>
-function getMessage(id)
-{
-   $.ajax({
-
-     type: "GET",
-     url: 'fetchmessage.php',
-     data: "id=" + id, // appears as $_GET['id'] @ your backend side
-     success: function(data) {
-           // data is ur summary
-          $('#show').html(data);
-     }
-
-   });
-
-}
-</script>
 
 <?php 	include 'selectdash.php'; ?>
 <!-- Top Background Image Wrapper -->
+<div class="bgded" style="background-image:url('images/demo/backgrounds/01.png');"> 
   <div class="wrapper row2">
     <div id="breadcrumb" class="hoc clear"> 
-	<div class="bgded"/>
-	<img style="width: 1500px; height: 100px;" src="uploads/<?php echo $result['banner_image']?>" alt="">
     </div>
   </div>
-
-
+</div>
 <div class="wrapper row3">
   <main class="hoc container clear"> 
     <!-- main body -->
 	
     <div class="one_half first">
 	
-	<img style="width: 480px; height: 380px;" class="inspace-10 borderedbox" src="uploads/<?php echo $result['event_image'] ?>" alt="">
+	<img class="inspace-10 borderedbox" src="uploads/<?php echo $result['event_image'] ?>" alt="">
 	
 	</div>
     <div class="one_half"><br>
@@ -188,19 +203,19 @@ function getMessage(id)
     </div>
     <article class="one_third first">
 		<a href="#">
-		<img style="width: 300px; height: 380px;" class="borderedbox inspace-10 btmspace-30" src="uploads/<?php echo $result['key_sp1'] ?>" alt="">
+		<img class="borderedbox inspace-10 btmspace-30" src="uploads/<?php echo $result['key_sp1'] ?>" alt="">
 		</a>
       <h2 class="heading font-x1"><?php echo $result['key_spname1'];  ?></h2>
       <p class="btmspace-30"></p>
     </article>
     <article class="one_third">		<a href="#">
-			<img style="width: 300px; height: 380px;" class="borderedbox inspace-10 btmspace-30" src="uploads/<?php echo $result['key_sp2'] ?>" alt="">
+			<img class="borderedbox inspace-10 btmspace-30" src="uploads/<?php echo $result['key_sp2'] ?>" alt="">
 		</a>
       <h2 class="heading font-x1"><?php echo $result['key_spname2']; ?></h2>
       <p class="btmspace-30"></p>
     </article>
     <article class="one_third"><a href="#">
-			<img style="width: 300px; height: 380px;" class="borderedbox inspace-10 btmspace-30" src="uploads/<?php echo $result['key_sp3'] ?>" alt="">
+			<img class="borderedbox inspace-10 btmspace-30" src="uploads/<?php echo $result['key_sp3'] ?>" alt="">
 		</a>
       <h2 class="heading font-x1"><?php echo $result['key_spname3'];  ?></h2>
       <p class="btmspace-30"></p>
@@ -211,11 +226,12 @@ function getMessage(id)
 </div>
 <div class="wrapper row3" style="opacity="0.5" ">
   <article class="hoc container clear"> 
-    <div class="one_half first"><img style="width: 480px; height: 380px;" class="borderedbox inspace-10 btmspace-30" src="uploads/<?php echo $result['venue_image'] ?>" alt=""></div>
+    <div class="one_half first"><img class="borderedbox inspace-10 btmspace-30" src="uploads/<?php echo $result['venue_image'] ?>" alt=""></div>
     <div class="one_half">
       <h2 class="heading"><?php echo $result['venue_name']; ?></h2>
-      <p><?php echo nl2br($result['details']); ?></p>
-
+      <p><?php echo $result['details']; ?></p>
+	  <p><address>Venue:  The Isthmus, Sejingkat,, 93050 Kuching, Sarawak, Malaysia</address></p>
+	  <p>Date:  June-03-2016  To  June-05-2016 <p>
       </ul>
       <footer>
         <ul class="nospace inline pushright">
@@ -227,6 +243,7 @@ function getMessage(id)
 </div>
 <div class="wrapper row4">
   <footer id="footer" class="hoc clear"> 
+    <!-- ################################################################################################ -->
     <div class="center btmspace-80">
       <h2 class="heading">Final Year Presentaion</h2>
       <p>Team members</p>
@@ -244,8 +261,51 @@ function getMessage(id)
     <div class="one_quarter">
       <h6 class="title">Samuel Hii Tuan Ong</h6>
     </div>
+    <!-- ################################################################################################ -->
   </footer>
 </div>
+
+
+ <!-- Modal -->
+  <div class="modal hide" data-easein="fadeInDown" data-easeout="fadeOutDown" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" id="myMsgModal" >
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content"  style=' overflow-y:scroll; width:500px; height:250px;'>
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i></button>
+        </div>
+        <div class="modal-body">
+		  <div id="msgdetails"></div>
+        </div>
+
+        <!--<div class="modal-footer">
+        </div>-->
+      </div>
+    </div>
+  </div>
+  
+   <script>
+	  $(document).on("click", ".open-message", function () {
+		 var nID = $(this).data('id');
+		 
+			 if (window.XMLHttpRequest) {
+			// code for IE7+, Firefox, Chrome, Opera, Safari
+				xmlhttp = new XMLHttpRequest();
+			} else {
+				// code for IE6, IE5
+				xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					document.getElementById("msgdetails").innerHTML = this.responseText;
+				}
+			};
+			xmlhttp.open("GET","fetchmessage.php?nid="+nID,true);
+			xmlhttp.send();
+	});
+	  </script>	
+
 <a id="backtotop" href="#top"><i class="fa fa-chevron-up"></i></a>
 <!-- JAVASCRIPTS -->
 <script src="layout/scripts/jquery.min.js"></script>

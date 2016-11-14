@@ -33,20 +33,99 @@ Licence URI: http://www.os-templates.com/template-terms
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <link href="layout/styles/layout.css" rel="stylesheet" type="text/css" media="all">
-<link href="layout/styles/ray.css" rel="stylesheet" type="text/css" media="all">
 
 <link href="../dist/styles/metro/notify-metro.css" rel="stylesheet" />
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script src="../dist/notify.js"></script>
 <script src="../dist/styles/metro/notify-metro.js"></script>
+
+	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  
+<!-- 	<script type="text/javascript" src="scripts/jquery-1.11.0.min.js"></script>
+ -->	  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
 </head>
+<style>
+
+
+.dropbtn {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+.dropdown:hover .dropbtn {
+    background-color: red;
+}
+
+.dropdown {
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+::-webkit-scrollbar { 
+    display: none; 
+}
+
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1; cursor: pointer;}
+
+.dropdown:hover .dropdown-content {
+	cursor: hand;
+    display: block;
+}
+</style>
+
 <body id="top">
 
 <div class="wrapper row0">
   <div id="topbar" class="hoc clear"> 
     <div class="fl_right">
       <ul class="nospace inline pushright">
-	  		<li><i class="fa fa-sign-in"></i> <a href="Logout.php">Log out</a></li>
+<li class="dropdown"><i class="fa fa-envelope"></i> Inbox
+				<div class="dropdown-content" style='overflow-y:scroll; height:200px;'>
+				<?php
+					$SQLquery = "SELECT * FROM tblnotifications WHERE p_id = '$logID'";
+					$QueryResult = $conn->query($SQLquery);
+					
+					if($QueryResult->num_rows == 0)
+						{
+							echo "<a>No messages at the moment</a>";
+							
+						}
+					else
+						{
+							while(($row = $QueryResult->fetch_assoc()) != false)
+							{
+								$title = $row["notification_title"];
+							
+								echo "<a data-id=\"".$row['n_id']."\" data-toggle=\"modal\" data-target=\"#myMsgModal\" class=\"open-message\">" .$title. "</a>";
+							}
+							
+						}
+		?>
+				 
+				</div>
+			  </li>
+			  <li><i class="fa fa-sign-in"></i> <a href="Logout.php">Log out</a></li>
+
 
       </ul>
     </div>
@@ -59,7 +138,7 @@ Licence URI: http://www.os-templates.com/template-terms
 <div class="wrapper row1">
   <header id="header" class="hoc clear"> 
     <div id="logo" class="fl_left">
-       <h1><a href="../test/dashboardParticipant.php">Conference management system</a></h1>
+       <h1><a href="../test2/dashboardParticipant.php">Conference management system</a></h1>
     </div>
     <nav id="mainav" class="fl_right">
       <ul class="clear">
@@ -67,7 +146,7 @@ Licence URI: http://www.os-templates.com/template-terms
          <li><a href="dashboardParticipant.php">Home</a></li>
         <li><a href="chooseConfe.php">Participate</a></li>
 		<li><a href="HotelTourAlone.php">Hotel / Tour Booking</a></li>
-		<li><a href="cancelParticipation.php">Cancel Participation & Booking</a></li>
+		<li><a href="cancelParticipation.php">Manage Participation & Bookings</a></li>
 		<li><a href="Feedback.php">Provide Feedback</a>
 		<li><a  href="Enquiries.php">Send Enquiries</a></li>
           
@@ -86,7 +165,7 @@ Licence URI: http://www.os-templates.com/template-terms
 <div class="wrapper row3">
   <main class="hoc container clear"> 
     <!-- main body -->
-    <div class="content three_quarter first"> 
+    <div class="content three_quarter first" style="width:500px; margin-left:10%;"> 
       <div class="scrollable">
 <form action="" method="post" name="fForm" id="feedback" >
 			<fieldset id="chooseConf">
@@ -165,7 +244,46 @@ Licence URI: http://www.os-templates.com/template-terms
 
 </div>
 	  
-   
+<!-- Modal -->
+  <div class="modal hide" data-easein="fadeInDown" data-easeout="fadeOutDown" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" id="myMsgModal" >
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content"  style=' overflow-y:scroll; width:500px; height:250px;'>
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i></button>
+        </div>
+        <div class="modal-body">
+		  <div id="msgdetails"></div>
+        </div>
+
+        <!--<div class="modal-footer">
+        </div>-->
+      </div>
+    </div>
+  </div>
+  
+   <script>
+	  $(document).on("click", ".open-message", function () {
+		 var nID = $(this).data('id');
+		 
+			 if (window.XMLHttpRequest) {
+			// code for IE7+, Firefox, Chrome, Opera, Safari
+				xmlhttp = new XMLHttpRequest();
+			} else {
+				// code for IE6, IE5
+				xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					document.getElementById("msgdetails").innerHTML = this.responseText;
+				}
+			};
+			xmlhttp.open("GET","fetchmessage.php?nid="+nID,true);
+			xmlhttp.send();
+	});
+	  </script>	    
+  
     <!-- / main body -->
     <div class="clear"></div>
   </main>

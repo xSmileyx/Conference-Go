@@ -19,10 +19,12 @@
 		}
 		
 	$pVenue = $_SESSION["pVenue"];
-	$chosen_conference = $_SESSION["chosen_conference"];
+	//$chosen_conference = $_SESSION["chosen_conference"];
 	$title = $_SESSION["conf_name"];
 	$ref = $_SESSION["ref_num"];
 	$passtype = $_SESSION["pass_type"];
+	
+
 	
 	// if(($_SESSION["sponsor_name"] != NULL) && ($_SESSION["sponsor_amount"] != NULL))
 		// {
@@ -216,6 +218,7 @@ if(isset($_POST["Submit"]))//checks if the submit button is selected
 		      <b>Reference Number</b><br> $ref <br>
 			  <b>Passtype Chosen</b><br> $passtype<br>";
 			  
+	  
 			  
 		// if($sponsored != NULL & $sponsorAmt != NULL)
 			// {			
@@ -236,12 +239,38 @@ if(isset($_POST["Submit"]))//checks if the submit button is selected
 		if($_POST["stayFrom"] != "" && $_POST["stayTo"] != "" && $_POST["numAdults"] != "" && $_POST["numChildren"] != " " )
 			{
 				$reqID = $_POST["reqID"];
-				$preferredHotel = $_POST["pHotel"];
+				$preferredRoom = $_POST["pRoom"];
 				$stayFrom = $_POST["stayFrom"];
 				$stayTo = $_POST["stayTo"];
 				$roomReq = $_POST["rRequirement"];
 				$numAdults = $_POST["numAdults"];
 				$numChildren = $_POST["numChildren"];
+				
+				$SQLquery = "SELECT * FROM tblroom WHERE room_id = '$preferredRoom'";
+				$QueryResult = $conn->query($SQLquery);
+				
+				if($QueryResult->num_rows == 0)
+					{
+						//echo "<script language='javascript'>alert('This conference reference number is not within the database.');</script>";
+					}
+				else
+					{
+						// output data of each row
+						while(($row = $QueryResult->fetch_assoc()) != false)
+							{
+								$roomName = $row["room_type"];
+							}
+					}
+				
+				
+				$_SESSION["reqID"] = $reqID;
+				$_SESSION["pRoom"] = $preferredRoom;
+				$_SESSION["stayFrom"] = $stayFrom;
+				$_SESSION["stayTo"] = $stayTo;
+				$_SESSION["rRequirement"] = $roomReq;
+				$_SESSION["numAdults"] = $numAdults;
+				$_SESSION["numChildren"] = $numChildren;
+				
 				// $logFirstName = $_SESSION["log_firstname"];
 				// $logSurName = $_SESSION["log_surname"];
 				// $logEmail = $_SESSION["log_email"];
@@ -250,45 +279,58 @@ if(isset($_POST["Submit"]))//checks if the submit button is selected
 				$sdate = date('d M Y', strtotime($stayFrom));
 				$edate = date('d M Y', strtotime($stayTo));
 				
+				
+				
 				echo "<fieldset> <legend>HOTEL RESERVATION REQUEST SUMMARY</legend>";
 				echo "Name of requester: " .$logFirstName. " " .$logSurName;
 				echo "<br>Email of requester: " .$logEmail ;
 				echo "<br>Phone number of requester: " .$logPhone;
 				echo "<br>Your hotel reservation request ID is ". $reqID;
-				echo "<br>Your preferred hotel is ". $preferredHotel;
+				echo "<br>Your preferred room is ". $roomName;
 				echo "<br>Your hotel stay request is from ". $sdate. " until " .$edate;
 			
 				echo "<br>Number of adults staying: ". $numAdults;
 				echo "<br>Number of Children staying ". $numChildren;
 				
-				if(isset($_POST["specialReq"]))
+				@$body =  "<br><br>Hotel Reservation Request (Request ID : " .$reqID. ")
+				  <br><b>Name of requester</b> : " .$logFirstName. " " .$logSurName.
+				 "<br><b>Email of requester</b> : " .$logEmail. 
+				 "<br><b>Phone number of requester</b> : " .$logPhone.
+				 "<br><b>Number of adults staying</b> : " .$numAdults.
+				 "<br><b>Number of Children staying</b> : " .$numChildren.
+				 "<br><b>Preferred  Room</b> : ". $roomName.
+				 "<br><b>Arrival Date</b> : ". $sdate.
+				 "<br><b>Departure Date</b> : " .$edate;
+
+				if($_POST["specialReq"] != "")
 					{
 						$specialReq = $_POST["specialReq"];
+						$_SESSION["specialReq"] = $specialReq;
+						
 						echo "<br>Special Requirements: " .$specialReq;
+						$body .= "<br><b>Special Requirements</b> : " .$specialReq;
 					}
+				
+						
+				$hotelBody = $body;
+				$_SESSION["hBody"] = $hotelBody;
 				
 				echo "<br><br><div class=\"no-print\"><font color = green>Request sent via email to the Event Manager (evManager@msn.com)!</font></div>";
 				echo "</fieldset><br><hr><br>";
 
-				$SQLquery = "SELECT * FROM tblconf_participant";
-				$QueryResult = $conn->query($SQLquery);
-				
-				if($QueryResult->num_rows == 0)
+				if($_POST["specialReq"] != "")
 					{
-						echo "<script language='javascript'>alert('This conference reference number is not within the database.');</script>";
+						$bookedDate = date("Y-m-d");
+						$SQLquery = "INSERT INTO tblbookingdetails (booking_id, p_id, p_firstname, p_surname, confpass_reference, room_id, start_date, end_date, adults,children,room_requirements,special_requirements, booking_date)
+									 VALUES ('$reqID','$logID', '$logFirstName','$logSurName',$ref,'$preferredRoom','$stayFrom','$stayTo','$numAdults','$numChildren','$roomReq','$specialReq','$bookedDate')";
 					}
 				else
 					{
-						// output data of each row
-						while(($row = $QueryResult->fetch_assoc()) != false)
-							{
-								$refNum = $row["confpass_reference"];
-							}
+							$bookedDate = date("Y-m-d");
+							$SQLquery = "INSERT INTO tblbookingdetails (booking_id, p_id, p_firstname, p_surname, confpass_reference, room_id, start_date, end_date, adults,children,room_requirements,special_requirements, booking_date)
+										 VALUES ('$reqID','$logID', '$logFirstName','$logSurName',$ref,'$preferredRoom','$stayFrom','$stayTo','$numAdults','$numChildren','$roomReq','','$bookedDate')";
+
 					}
-				
-				$bookedDate = date("Y-m-d");
-				$SQLquery = "INSERT INTO tblbookingdetails (booking_id, p_id, p_firstname, p_surname, confpass_reference, hotel_name, start_date, end_date, amount_paid, booking_date)
-							 VALUES ('$reqID','$logID', '$logFirstName','$logSurName','$refNum','$preferredHotel','$stayFrom','$stayTo','NULL','$bookedDate')";
 							 
 				//checks if there's any error on adding the values
 				if ($conn->query($SQLquery) == TRUE)
@@ -302,129 +344,125 @@ if(isset($_POST["Submit"]))//checks if the submit button is selected
 					}
 			}
 			
-		if($_POST["bookedHotel"] != "" && $_POST["stayFromManual"] != "" && $_POST["stayToManual"] != "" && $_POST["bookAmtPaid"] != "")
-			{
-				$bookID = $_POST["manualBookID"];
-				$bookedHotelName = $_POST["bookedHotel"];
-				$bookStayFrom = $_POST["stayFromManual"];
-				$bookedStayTo = $_POST["stayToManual"];
-				$bookedAmount = $_POST["bookAmtPaid"];
-				
-				$sdate = date('d M Y', strtotime($bookStayFrom));
-				$edate = date('d M Y', strtotime($bookedStayTo));
-				
-				
-				echo "<fieldset> <legend>YOUR HOTEL BOOKING SUMMARY</legend>";
-				echo "Booked hotel name: " .$bookedHotelName;
-				echo "<br>Your hotel booking ID is ". $bookID;
-				echo "<br>Amount that you have paid for the hotel booking is RM". $bookedAmount;
-				echo "<br>Your hotel stay is from ". $sdate. " until " .$edate;
-				echo "</fieldset><br><hr><br>";
-
-				$SQLquery = "SELECT * FROM tblconf_participant";
-				$QueryResult = $conn->query($SQLquery);
-				
-				if($QueryResult->num_rows == 0)
-					{
-						echo "<script language='javascript'>alert('This conference reference number is not within the database.');</script>";
-					}
-				else
-					{
-						// output data of each row
-						while(($row = $QueryResult->fetch_assoc()) != false)
-							{
-								$refNum = $row["confpass_reference"];
-							}
-					}
-					
-				$bookedDateManual = date("Y-m-d");
-				$SQLquery = "INSERT INTO tblbookingdetails (booking_id, p_id, p_firstname, p_surname, confpass_reference, hotel_name, start_date, end_date, amount_paid, booking_date)
-					VALUES ('$bookID','$logID', '$logFirstName','$logSurName','$refNum','$bookedHotelName','$bookStayFrom','$bookedStayTo','$bookedAmount','$bookedDateManual')";
-							 
-				//checks if there's any error on adding the values
-				if ($conn->query($SQLquery) == TRUE)
-					{
-						 //echo "<script language='javascript'>alert('$foodName succesfully added to the menu!');</script>"; 
-					}
-				else 
-					{
-						echo "<font color=red><p>Unable to create the records.<br />
-								Error Code ". $conn->errno." : ". $conn->error." </font></p>";
-					}
-				
-			}
 			
 /*---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/			
 	
-		if($_POST["pTour"] != '0')
-			{
-				$tourID = $_POST["pTour"];
-				$tourBookingID = $_POST["tourBookingID"]; 
-				
-				$SQLquery = "SELECT * FROM tbltour WHERE tour_id = '$tourID'";
-				$QueryResult = $conn->query($SQLquery);
-				
-				if($QueryResult->num_rows == 0)
-					{
-						echo "<script language='javascript'>alert('This tour is not within the database.');</script>";
-					}
-				else
-					{
-						// output data of each row
-						while(($row = $QueryResult->fetch_assoc()) != false)
-							{
-								$tourName = $row["tour_name"];
-								$tourLocation = $row["tour_location"];
-								$tourDuration = $row["tour_duration"];
-								$tourStartTime = $row["tour_starttime"];
-								$tourPrice = $row["tour_price"];
-								
-							}
-					}
-					
-				$SQLquery = "SELECT * FROM tblconf_participant";
-				$QueryResult = $conn->query($SQLquery);
-				
-				if($QueryResult->num_rows == 0)
-					{
-						echo "<script language='javascript'>alert('This conference reference number is not within the database.');</script>";
-					}
-				else
-					{
-						// output data of each row
-						while(($row = $QueryResult->fetch_assoc()) != false)
-							{
-								$refNum = $row["confpass_reference"];
-							}
-					}
-					
-				$tourBookedDate = date("Y-m-d");
-				$SQLquery = "INSERT INTO tbltourbookingdetails (tourbooking_id, p_id, p_firstname, p_surname, confpass_reference, tour_name, tour_location, tour_duration, tour_starttime, tour_price, booking_date)
-							VALUES ('$tourBookingID','$logID', '$logFirstName','$logSurName','$refNum','$tourName','$tourLocation','$tourDuration','$tourStartTime','$tourPrice','$tourBookedDate')";
-					
-				//checks if there's any error on adding the values
-				if ($conn->query($SQLquery) == TRUE)
-					{
-						 //echo "<script language='javascript'>alert('$foodName succesfully added to the menu!');</script>"; 
-					}
-				else 
-					{
-						echo "<font color=red><p>Unable to create the records.<br />
-								Error Code ". $conn->errno." : ". $conn->error." </font></p>";
-					}
-						
-						
+			if(!empty($_POST['chosenTour'])) 
+	{
+		
 				echo "<fieldset><legend>YOUR TOUR BOOKING SUMMARY</legend>";
-				echo "The tour, " .$tourName. " is located at " .$tourLocation;
-				echo "<br>The tour will be around " .$tourDuration. " hours long";
-				echo "<br>The tour starts at " .$tourStartTime;
-				echo "<br>It will be RM" .$tourPrice. " per person.";
-				echo "</fieldset><br><hr><br>";
-			}
+				$checked_count = count($_POST['chosenTour']);
+				
+				echo "You have selected following ".$checked_count." option(s): <br/>";
+	
+				
+				
+				foreach($_POST['chosenTour'] as $selected)
+				{
+					
+					$tourBookingID = mt_rand(100001,999999);
+									
+									$SQLquery = "SELECT * FROM tbltourbookingdetails WHERE tourbooking_id LIKE '$tourBookingID'";
+									$QueryResult =  $conn->query($SQLquery);
+								
+									
+									if($QueryResult->num_rows == 0)
+										{
+											//echo "$rID";
+										}
+									else
+										{
+											// output data of each row
+											while(($row = $QueryResult->fetch_assoc()) != false)
+												{
+													$checkID = $row['booking_id'];
+								
+													if($checkID == $tourBookingID)
+														{
+															$tourBookingID = mt_rand(100001,999999);
+															//echo "$rID";
+														}
+													
+												}
+										}
+					
+					$tourID = $selected;
+					$tourDateID = "date" .$selected;
+					
+					$commence = $_POST['tourDate' .$selected];
+					$date=date_create($commence);
+					$dateFormat = date_format($date,"jS F Y");
+					
+					
+					
+					
+					$SQLquery = "SELECT * FROM tbltour WHERE tour_id = '$tourID'";
+					$QueryResult = $conn->query($SQLquery);
+					
+					if($QueryResult->num_rows == 0)
+						{
+							echo "<script language='javascript'>alert('This tour is not within the database.'); window.history.back();</script>";
+						}
+					else
+						{
+							// output data of each row
+							while(($row = $QueryResult->fetch_assoc()) != false)
+								{
+									$tourName = $row["tour_name"];
+									$tourLocation = $row["tour_location"];
+									$tourDuration = $row["tour_duration"];
+									$tourStartTime = $row["tour_starttime"];
+									$tourPrice = $row["tour_price"];
+									
+									echo "<strong>TOUR " .$selected. "</strong><br>";
+									echo "Booking ID: " .$tourBookingID. "<br>";
+									echo "The tour, " .$tourName. " is located at " .$tourLocation;
+									echo "<br>The tour will be around " .$tourDuration. " hours long";
+									echo "<br>The tour starts at " .$tourStartTime. " on the " .$dateFormat;
+									echo "<br>It will be RM" .$tourPrice. " per person.";
+									echo "<br><br></fieldset>";			
+
+									$tbody = "<br><br><b>TOUR " .$selected. "</b> (Booking ID : " .$tourBookingID. ") 
+									 <br><b>Tour Name</b> : " .$tourName.  
+									"<br><b>Tour Location</b> : " .$tourLocation.
+									"<br><b>Tour Duration</b> : " .$tourDuration. 
+									"<br><b>Tour Start time</b> : " .$tourStartTime. 
+									"<br><b>Your Tour Start Date</b> : " .$dateFormat.
+									"<br><b>Tour Price(RM)</b> : " .$tourPrice. " per person";
+									
+									
+									//$body = "<b>TOUR " .$selected. " (Booking ID : ".$tourBookingID. ")</b>\n\n The tour, " .$tourName. " is located at " .$tourLocation. ".\n The tour will be around " .$tourDuration. " hours long. \n The tour starts at " .$tourStartTime. " on the " .$dateFormat. ".\n It will be RM" .$tourPrice. " per person.";
+									$tourBody = $tbody;
+									$_SESSION["tBodies"][] = $tourBody;
+									//array_push($_SESSION["tBodies"],$tourBody);
+									
+									$tourBookedDate = date("Y-m-d");		
+									$SQLquery = "INSERT INTO tbltourbookingdetails (tourbooking_id,tour_id,p_id, p_firstname, p_surname, confpass_reference, tour_name, tour_location, tour_duration, tour_starttime,tour_startday, tour_price,booking_date)
+												VALUES ('$tourBookingID','$tourID','$logID', '$logFirstName','$logSurName',$ref,'$tourName','$tourLocation','$tourDuration','$tourStartTime','$commence','$tourPrice','$tourBookedDate')";
+										
+									//checks if there's any error on adding the values
+									if ($conn->query($SQLquery) == TRUE)
+										{
+											//echo "<script language='javascript'>alert('This tour is not within the database.'); window.history.back();</script>";
+										}
+									else 
+										{
+											echo "<font color=red><p>Unable to create the records.<br />
+													Error Code ". $conn->errno." : ". $conn->error." </font></p>";
+										}
+													
+								}
+						}
+						
+			
+				}
+				
+					
+	}
 			
 			echo "<div class=\"no-print\">";
 		
-								echo "<button onclick=\"location.href ='../test/chooseConfe.php';\" class=\"backButton\" style=\"display:inline-block;\" value=\"back\">Back to conference selection</button>";
+								echo "<button onclick=\"location.href ='../test2/chooseConfe.php';\" class=\"backButton\" style=\"display:inline-block;\" value=\"back\">Back to conference selection</button>";
 
 			
 						echo "<br><br><form class=\"paypal\" action=\"payments.php\" method=\"post\" id=\"paypal_form\" target=\"_blank\">

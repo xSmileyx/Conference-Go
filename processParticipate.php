@@ -1,5 +1,6 @@
 <?php
 
+	
 	include('config.php');
 	session_start();//start session
 	$logUser = $_SESSION["log_user"];
@@ -9,6 +10,8 @@
 	$logEmail = $_SESSION["log_email"];
 	$logPhone = $_SESSION["log_phone"];
 	$logCountry = $_SESSION["log_country"];
+	
+
 	
 	//configuration script
 	include ('config.php');
@@ -20,7 +23,7 @@
 		}
 		
 	$pVenue = $_SESSION["pVenue"];
-	$chosen_conference = $_SESSION["chosen_conference"];
+	//$chosen_conference = $_SESSION["chosen_conference"];
 	
 	date_default_timezone_set("Asia/Kuala_Lumpur");//sets to local(Malaysian) time zone 
 ?>
@@ -202,8 +205,9 @@ th {
 
 if(isset($_POST["Submit"]))//checks if the submit button is selected
 	{
+		
 		echo "<fieldset>
-	<legend>PARTICIPATION SUMMARY</legend>";
+		<legend>PARTICIPATION SUMMARY</legend>";
 		$confName = $_POST["title"];
 		$_SESSION["conf_name"] = $confName;
 
@@ -226,14 +230,25 @@ if(isset($_POST["Submit"]))//checks if the submit button is selected
 			
 		$ref = $_POST["refNum"];
 		$_SESSION["ref_num"] = $ref;
+		$body = "Hello there, ".$logFirstName. " " .$logSurName. "! You have successfully participated.<br>Here are your participation details: <br><br>";
+
 
 		echo "<b>Conference Title</b><br> $confName <br>
 			  <b>Location</b><br> $pVenue <br>
 			  <b>Participant</b><br> $logFirstName $logSurName <br> 
 			  <b>Nationality</b><br> $logCountry<br>
 		      <b>Reference Number</b><br> $ref <br>
-			  ";
+			  ";			
 			  
+		$body .= "(Reference Number : $ref )<br>
+			  <b>Conference Title</b> : $confName <br>
+			  <b>Location</b> : $pVenue <br>
+			  <b>Participant</b> : $logFirstName $logSurName <br> 
+			  <b>Nationality</b> : $logCountry";		
+			  
+		
+		
+			 			  
 /*---------------------------------------------------------------------------------------------------------------------------------------------------*/
 		
 		$passID = $_POST["pPassType"];
@@ -257,11 +272,14 @@ if(isset($_POST["Submit"]))//checks if the submit button is selected
 						$_SESSION["pass_type"] = $passType;
 						$_SESSION["pass_amount"] = $passAmount;
 						echo "<b>Passtype chosen</b><br> $passType <br>";
+						$body .= "<br><b>Passtype chosen</b> : $passType ";
+						//$body .= "Passtype chosen : $passType";
 					}
 			}
-			  
-		$itemName = "Conferece Pass (".$passType.") for a conference about ".$confName;
-		$_SESSION["item_name"] = $itemName;
+			
+		
+
+		
 /*---------------------------------------------------------------------------------------------------------------------------------------------------*/
 	
 		$sponsorCheck = $_POST["fqrOne"];
@@ -289,17 +307,25 @@ if(isset($_POST["Submit"]))//checks if the submit button is selected
 								$_SESSION["sponsor_name"] = $participantSponsorName;
 								$_SESSION["sponsor_amount"] = $participantSponsorAmount;
 								echo "<b>Sponsored by</b><br> $participantSponsorName <br> Amount: RM$participantSponsorAmount <br>";
+								$body .= "<br><b>Sponsored by</b> $participantSponsorName (Amount: RM$participantSponsorAmount)";
 							}
 					}
 
 			}
 			
+		$participationBody = $body;
+		$_SESSION["pBody"] = $participationBody;
 /*---------------------------------------------------------------------------------------------------------------------------------------------------*/
 		
 	
 		$SQLquery = "SELECT * FROM tblsession";
 		$QueryResult = $conn->query($SQLquery);
 		echo "<br>";
+
+		echo "<table border=\"1\" id=\"tblFP\" >";
+		echo "<col width=\"400\"><col width=\"400\"><col width=\"400\"><col width=\"400\">";
+		echo "<th colspan=\"4\"><b>SCHEDULE</b></th>";									
+		echo "<tr id=tHeader><td><b>Time</b></td><td><b>Topic</b></td><td><b>Date</b></td><td><b>Speaker</b></td></tr>";
 		
 		if($QueryResult->num_rows == 0)
 			{
@@ -307,19 +333,11 @@ if(isset($_POST["Submit"]))//checks if the submit button is selected
 			}
 		else
 			{
-				echo "<table border=\"1\" id=\"tblFP\" >";
-				echo "<col width=\"400\"><col width=\"400\"><col width=\"400\"><col width=\"400\">";
-				echo "<th colspan=\"4\"><b>SCHEDULE</b></th>";									
-				echo "<tr id=tHeader><td><b>Time</b></td><td><b>Topic</b></td><td><b>Date</b></td><td><b>Speaker</b></td>";
-				
-				//echo "What did you participate? <br> ";
-				// output data of each row
+
 				while(($row = $QueryResult->fetch_assoc()) != false)
-					{
-						echo "<table border=\"1\" id=\"tblFP\" >";
-						echo "<col width=\"400\"><col width=\"400\"><col width=\"400\"><col width=\"400\">";
-													
+					{													
 						$sessionID = $row["session_id"];
+						
 						$sessDesc = "desc".$sessionID;
 						
 						$sessDescA = $sessDesc. "a";
@@ -343,20 +361,31 @@ if(isset($_POST["Submit"]))//checks if the submit button is selected
 								$Day = $_POST["$hFieldNameDay"];
 								$Speaker = $_POST["$hFieldNameSpeaker"];
 								
-								//echo "- $sessionDescA about the topic: $ssName at  $startTime until $endTime on $Day spoken by $Speaker. <br>";
 								$date = date('d M Y', strtotime($Day));
 								
-								// $_SESSION[""]
-								// $_SESSION[""]
-								// $_SESSION[""]
-								// $_SESSION[""]
+								$sessStrA = "<tr><td>$startTime - $endTime</td><td>$ssName</td><td>$date</td><td>$Speaker</td></tr>";
+								$_SESSION["sessDescA"] =  $sessStrA; 
 								
+								echo "<tr><td>$startTime - $endTime</td><td>$ssName</td><td>$date</td><td>$Speaker</td></tr>";
 								
-								
-								echo "<tr><td>$startTime - $endTime</td><td>$ssName</td><td>$date</td><td>$Speaker</td>";
-								
-								
-								//$ref = $ref. "1";
+								$pSessionID = $ref. '' .$sessionID;
+								$SQLquery = "INSERT IGNORE INTO tblsession_participant(p_session_id,conf_id,session_id,participation_type,p_id)
+											 VALUES ('$pSessionID', '$confID', '$sessionID','$sessionDescA', '$logID')";
+											 
+											 
+								//checks if there's any error on adding the values
+								if ($conn->query($SQLquery) == TRUE)
+									{
+										//echo "Success!";
+									}
+								else 
+									{
+										// echo "<font color=red><p>Unable to create the records.<br />
+												// Error Code ". $conn->errno." : ". $conn->error." </font></p>";
+									}
+
+								continue;
+																
 							}	
 							
 						if(isset($_POST["$sessDescB"]))
@@ -375,14 +404,30 @@ if(isset($_POST["Submit"]))//checks if the submit button is selected
 								$Day = $_POST["$hFieldNameDay"];
 								$Speaker = $_POST["$hFieldNameSpeaker"];
 								
-								//echo "- $sessionDescB about the topic: $ssName at  $startTime until $endTime on $Day spoken by $Speaker. <br>";
-								
-								//$ref = $ref. "2";
-								
 								$date = date('d M Y', strtotime($Day));
 								
-								echo "<tr><td>$startTime - $endTime</td><td>$ssName</td><td>$date</td><td>$Speaker</td>";
+								$sessStrB = "<tr><td>$startTime - $endTime</td><td>$ssName</td><td>$date</td><td>$Speaker</td></tr>";
+								$_SESSION["sessDescB"] =  $sessStrB;
+								
+								echo "<tr><td>$startTime - $endTime</td><td>$ssName</td><td>$date</td><td>$Speaker</td></tr>";
+								
+								$pSessionID = $ref. '' .$sessionID;
+								$SQLquery = "INSERT IGNORE INTO tblsession_participant(p_session_id,conf_id,session_id,participation_type,p_id)
+											 VALUES ('$pSessionID', '$confID', '$sessionID','$sessionDescB', '$logID')";
+											 
+											 
+								//checks if there's any error on adding the values
+								if ($conn->query($SQLquery) == TRUE)
+									{
+										//echo "Success!";
+									}
+								else 
+									{
+										// echo "<font color=red><p>Unable to create the records.<br />
+												// Error Code ". $conn->errno." : ". $conn->error." </font></p>";
+									}
 
+							
 							}			
 							
 						if(isset($_POST["$sessDescC"]))
@@ -401,12 +446,29 @@ if(isset($_POST["Submit"]))//checks if the submit button is selected
 								$Day = $_POST["$hFieldNameDay"];
 								$Speaker = $_POST["$hFieldNameSpeaker"];
 								
-								//echo "- $sessionDescC about the topic: $ssName at  $startTime until $endTime on $Day spoken by $Speaker. <br>";
 								$date = date('d M Y', strtotime($Day));
 								
-								echo "<tr><td>$startTime - $endTime</td><td>$ssName</td><td>$date</td><td>$Speaker</td>";
-								//$ref = $ref. "3";
-
+								$sessStrC = "<tr><td>$startTime - $endTime</td><td>$ssName</td><td>$date</td><td>$Speaker</td></tr>";
+								$_SESSION["sessDescC"] =  $sessStrC;
+								
+								echo "<tr><td>$startTime - $endTime</td><td>$ssName</td><td>$date</td><td>$Speaker</td></tr>";
+								
+								$pSessionID = $ref. '' .$sessionID;
+								$SQLquery = "INSERT IGNORE INTO tblsession_participant(p_session_id,conf_id,session_id,participation_type,p_id)
+											 VALUES ('$pSessionID', '$confID', '$sessionID','$sessionDescC', '$logID')";
+											 
+								//checks if there's any error on adding the values
+								if ($conn->query($SQLquery) == TRUE)
+									{
+										//echo "Success!";
+									}
+								else 
+									{
+										// echo "<font color=red><p>Unable to create the records.<br />
+												// Error Code ". $conn->errno." : ". $conn->error." </font></p>";
+									}
+								
+								
 							}		
 							
 						if(isset($_POST["$sessDescD"]))
@@ -425,11 +487,29 @@ if(isset($_POST["Submit"]))//checks if the submit button is selected
 								$Day = $_POST["$hFieldNameDay"];
 								$Speaker = $_POST["$hFieldNameSpeaker"];
 								
-								//echo "- $sessionDescD about the topic: $ssName at  $startTime until $endTime on $Day spoken by $Speaker. <br>";
 								$date = date('d M Y', strtotime($Day));
 								
-								echo "<tr><td>$startTime - $endTime</td><td>$ssName</td><td>$date</td><td>$Speaker</td>";
-								//$ref = $ref. "4";
+								$sessStrD = "<tr><td>$startTime - $endTime</td><td>$ssName</td><td>$date</td><td>$Speaker</td></tr>";
+								$_SESSION["sessDescD"] =  $sessStrD;
+								
+								echo "<tr><td>$startTime - $endTime</td><td>$ssName</td><td>$date</td><td>$Speaker</td></tr>";
+								
+								
+								$pSessionID = $ref. '' .$sessionID;
+								$SQLquery = "INSERT IGNORE INTO tblsession_participant(p_session_id,conf_id,session_id,participation_type,p_id)
+											 VALUES ('$pSessionID', '$confID', '$sessionID','$sessionDescD', '$logID')";
+											 
+											 
+								//checks if there's any error on adding the values
+								if ($conn->query($SQLquery) == TRUE)
+									{
+										//echo "Success!";
+									}
+								else 
+									{
+										// echo "<font color=red><p>Unable to create the records.<br />
+												// Error Code ". $conn->errno." : ". $conn->error." </font></p>";
+									}
 								
 							}
 							
@@ -456,11 +536,23 @@ if(isset($_POST["Submit"]))//checks if the submit button is selected
 						echo "</fieldset>";
 				
 			}
+			
+		$SQLquery = "UPDATE tblpasstype 
+			 SET pass_availability = pass_availability - 1	
+			 WHERE pass_id LIKE '$passID'";
+		$QueryResult = $conn->query($SQLquery);
+		
+		$itemName = "Conferece Pass (".$passType.") for a conference about ".$confName;
+		$_SESSION["item_name"] = $itemName;
+		
+			
+			
 		echo "<div class=\"no-print\">";	
 		echo "<br><button onclick=\"location.href ='../test2/chooseConfe.php';\" class=\"backButton\"><< Back to conference selection</button>";
 		echo "<a class=\"pButton\" onClick=\"window.print()\" >Print Summary</a>";
-		echo "<a class=\"pButton\" href ='../test2/qr.html';\" target='_blank' >QR Code</a>";
-		echo "<a class=\"pButton\" href ='../test2/barcode.php';\" target='_blank' >Barcode</a>";
+		// echo "<a class=\"pButton\" href ='../test2/qr.html';\" target='_blank' >QR Code</a>";
+		echo "<a class=\"pButton\" href ='../test2/toPDF.php?id=$confID';\" target='_blank' >PDF</a>";
+		// echo "<a class=\"pButton\" href ='../test2/barcode.php';\" target='_blank' >Barcode</a>";
 		echo "<button onclick=\"location.href ='../test2/HotelTour.php';\" class=\"myButton\">Proceed to Hotel / Tour Booking >></button>";
 		echo "</div>";
 

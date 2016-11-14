@@ -19,8 +19,9 @@
 			exit();
 		}
 		
-	$chosenConf = $_POST["pConference"];
-	$_SESSION["chosen_conference"] = $chosenConf;
+	
+	$confID = $_POST["pConference"];
+	$_SESSION["chosen_conference_id"] = $confID;
 
 	
 ?>
@@ -91,12 +92,12 @@ Licence URI: http://www.os-templates.com/template-terms
     <nav id="mainav" class="fl_right">
       <ul class="clear">
 
-         <li><a href="dashboardParticipant.php">Home</a></li>
+    <!--      <li><a href="dashboardParticipant.php">Home</a></li>
         <li><a href="chooseConfe.php">Participate</a></li>
 		<li><a href="HotelTourAlone.php">Hotel / Tour Booking</a></li>
 		<li><a href="cancelParticipation.php">Cancel Participation & Booking</a></li>
 		<li><a href="Feedback.php">Provide Feedback</a>
-		<li><a  href="Enquiries.php">Send Enquiries</a></li>
+		<li><a  href="Enquiries.php">Send Enquiries</a></li> -->
           
     </nav>
   </header>
@@ -121,7 +122,21 @@ Licence URI: http://www.os-templates.com/template-terms
 						Welcome, <?php echo "<font style='font-weight:bold;'>".$logFirstName; echo " ". $logSurName. "</font>";?>!
 						<br><br>
 						
-						<input type="hidden" name="title" value="<?php echo $chosenConf; ?>">
+						<input type="hidden" name="title" value="<?php $SQLquery = "SELECT * FROM tblconference WHERE conf_id LIKE '$confID'";
+
+								$QueryResult = $conn->query($SQLquery);
+								
+								if($QueryResult->num_rows == 0)
+									{
+										echo "<option value = \"\"> --</option>";
+									}
+								else
+									{
+										while(($row = $QueryResult->fetch_assoc()) != false)
+										{
+											echo $row['conf_name'];
+										}
+									}											?>">
 						<font style='font-weight:bold;'>Reference Number:</font>
 								<input type="text" id="pID" name="refNum" value="<?php 
 									
@@ -161,7 +176,7 @@ Licence URI: http://www.os-templates.com/template-terms
 						<font style='font-weight:bold;'>Venue:</font>
 							<?php 
 
-								$SQLquery = "SELECT * FROM tblconference WHERE conf_name LIKE '$chosenConf'";
+								$SQLquery = "SELECT * FROM tblconference WHERE conf_id LIKE '$confID'";
 
 								$QueryResult = $conn->query($SQLquery);
 								
@@ -202,7 +217,7 @@ Licence URI: http://www.os-templates.com/template-terms
 							
 							<input id="pac-input" class="controls" type="text" onblur="auto();" style="height:30px;" placeholder="Search Box" value="<?php 
 
-								$SQLquery = "SELECT * FROM tblconference WHERE conf_name LIKE '$chosenConf'";
+								$SQLquery = "SELECT * FROM tblconference WHERE conf_id LIKE '$confID'";
 
 								$QueryResult = $conn->query($SQLquery);
 								//echo "<select name=\"pConference\" id=\"pConference\">";//creates a select option dropdown box
@@ -321,6 +336,7 @@ Licence URI: http://www.os-templates.com/template-terms
 									  origin: new google.maps.Point(0, 0),
 									  anchor: new google.maps.Point(17, 34),
 									  scaledSize: new google.maps.Size(25, 25)
+									  
 									};
 
 									// Create a marker for each place.
@@ -339,17 +355,17 @@ Licence URI: http://www.os-templates.com/template-terms
 									}
 								  });
 								  map.fitBounds(bounds);
+								   map.setZoom(15);
 								});
 							}
 							</script>
-							<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDig83sIOyi0hetUYaoD1_4IdmbIT2FGWc&libraries=places&callback=initAutocomplete" async defer></script>
-						
+					
 	
 						<br>
 							<font style='font-weight:bold;'>Description: </font>
 							<?php 
 							
-							$SQLquery = "SELECT * FROM tblconference WHERE conf_name LIKE '$chosenConf'";
+							$SQLquery = "SELECT * FROM tblconference WHERE conf_id LIKE '$confID'";
 							
 							$QueryResult = $conn->query($SQLquery);
 							
@@ -362,7 +378,7 @@ Licence URI: http://www.os-templates.com/template-terms
 									while(($row = $QueryResult->fetch_assoc()) != false)
 									{
 										$conferenceDesc = $row['conf_desc'];
-										//$havespaceFoodName = str_replace('_',' ',$foodName);
+				
 										echo $conferenceDesc;
 									}
 								}
@@ -374,7 +390,7 @@ Licence URI: http://www.os-templates.com/template-terms
 							<font style='font-weight:bold;'>Date:</font>
 							<?php 
 							
-							$SQLquery = "SELECT * FROM tblconference WHERE conf_name LIKE '$chosenConf'";
+							$SQLquery = "SELECT * FROM tblconference WHERE conf_id LIKE '$confID'";
 							
 							$QueryResult = $conn->query($SQLquery);
 							
@@ -398,7 +414,7 @@ Licence URI: http://www.os-templates.com/template-terms
 						<br><br>
 							<?php 
 							
-							$SQLquery = "SELECT * FROM tblconference WHERE conf_name LIKE '$chosenConf'";
+							$SQLquery = "SELECT * FROM tblconference WHERE conf_id LIKE '$confID'";
 							
 							$QueryResult = $conn->query($SQLquery);
 							
@@ -410,14 +426,14 @@ Licence URI: http://www.os-templates.com/template-terms
 								{
 									while(($row = $QueryResult->fetch_assoc()) != false)
 									{	
-										$confID = $row['conf_id'];
+										//$confID = $row['conf_id'];
 										
 										$SQLquery = "SELECT * FROM tblpasstype WHERE conf_id LIKE '$confID'";
 										$QueryResult = $conn->query($SQLquery);
 										
 										if($QueryResult->num_rows == 0)
 											{
-												echo "There's no passtype!";
+												echo "There's no passtype!<br>";
 											}
 										else
 											{
@@ -429,7 +445,7 @@ Licence URI: http://www.os-templates.com/template-terms
 												{	
 													$passType = $row["pass_type"];
 													$passPrice = $row["pass_price"];
-													$passAvailability = $row["pass_amount"];
+													$passAvailability = $row["pass_availability"];
 													echo "<tr><td>" . $passType. "</td><td>" . $passPrice. "</td><td>" . $passAvailability. "</td></tr>";
 												}
 												
@@ -444,24 +460,39 @@ Licence URI: http://www.os-templates.com/template-terms
 						<font style='font-weight:bold;'>Choose a passtype:</font>
 							<?php 
 			
-								$SQLquery = "SELECT * FROM tblpasstype";
+							$SQLquery = "SELECT * FROM tblconference WHERE conf_id LIKE '$confID'";
+							
+							$QueryResult = $conn->query($SQLquery);
+							
+							if($QueryResult->num_rows == 0)
+								{
+									echo "There's no passtype!";
+								}
+							else
+								{
+									while(($row = $QueryResult->fetch_assoc()) != false)
+									{	
+										//$confID = $row['conf_id'];
+										$SQLquery = "SELECT * FROM tblpasstype WHERE conf_id = '$confID'";
 
-								$QueryResult = $conn->query($SQLquery);
-								echo "<select name=\"pPassType\" id=\"pPassType\" class=\"twitter\">";//creates a select option dropdown box
-								
-								if($QueryResult->num_rows == 0)
-									{
-										echo "<option value = \"\"> --</option>";
+										$QueryResult = $conn->query($SQLquery);
+										echo "<select name=\"pPassType\" id=\"pPassType\" class=\"twitter\">";//creates a select option dropdown box
+										
+										if($QueryResult->num_rows == 0)
+											{
+												echo "<option value = \"\"> --</option>";
+											}
+										else
+											{
+												while(($row = $QueryResult->fetch_assoc()) != false)
+												{
+													$passtypeID = $row["pass_id"];
+													$passtypeName = $row["pass_type"];
+													echo "<option value = '".$passtypeID."'> " .$passtypeName. "</option>";//sets the values as the foods' name
+												}
+											}
 									}
-								else
-									{
-										while(($row = $QueryResult->fetch_assoc()) != false)
-										{
-											$passtypeID = $row["pass_id"];
-											$passtypeName = $row["pass_type"];
-											echo "<option value = '".$passtypeID."'> " .$passtypeName. "</option>";//sets the values as the foods' name
-										}
-									}
+								}
 									
 								echo "</select>   ";
 							?>
@@ -528,7 +559,7 @@ Licence URI: http://www.os-templates.com/template-terms
 						</script>
 							<?php 
 							
-							$SQLquery = "SELECT * FROM tblconference WHERE conf_name LIKE '$chosenConf'";
+							$SQLquery = "SELECT * FROM tblconference WHERE conf_id LIKE '$confID'";
 							
 							$QueryResult = $conn->query($SQLquery);
 							
@@ -540,7 +571,7 @@ Licence URI: http://www.os-templates.com/template-terms
 								{
 									while(($row = $QueryResult->fetch_assoc()) != false)
 									{	
-										$confID = $row['conf_id'];
+										//$confID = $row['conf_id'];
 										
 										$SQLquery = "SELECT tblsession.conf_id, tblsession.session_id, tblsession.session_day, tblsession.session_starttime, 
 													 tblsession.session_endtime, tblsession.session_name, tblsession.speaker_id, tblspeaker.speaker_id, 
@@ -571,17 +602,17 @@ Licence URI: http://www.os-templates.com/template-terms
 														$speakerLname = $row["speaker_lastname"];
 														
 														echo "<tr >
-														<td id ='descSession' style=\"border-bottom-style: solid;\"><hr>
+														<td id ='descSession'>
 														<input type=\"checkbox\" style='display: inline-block;' name='desc".$sessID."a'  class='myCheckBox' value='Presenting a paper' autocomplete=off>Presenting a paper<br>
 														<input type=\"checkbox\" style='display: inline-block;' name='desc".$sessID."b'  class='myCheckBox' value='Presenting a keynote or invited address'  autocomplete=off>Presenting a keynote or invited address<br>
 														<input type=\"checkbox\" style='display: inline-block;' name='desc".$sessID."c'  class='myCheckBox' value='Chairing a session'  autocomplete=off>Chairing a session<br>
 														<input type=\"checkbox\" style='display: inline-block;' name='desc".$sessID."d'  class='myCheckBox' value='Participating in a symposium'  autocomplete=off>Participating in a symposium<br>
 														</td>
-														<td style='text-align:center;'><hr>" . $sessName. "</td>
-														<td style='text-align:center;'><hr>". $sessStart. "</td>
-														<td style='text-align:center;'><hr>" . $sessEnd. "</td>
-														<td style='text-align:center;'><hr>" .$sessDay. "</td>
-														<td style='text-align:center;'><hr>" .$speakerFname. " "  .$speakerLname. "</td></tr>";	
+														<td style='text-align:center; vertical-align:middle;'>" . $sessName. "</td>
+														<td style='text-align:center; vertical-align:middle;'>". $sessStart. "</td>
+														<td style='text-align:center; vertical-align:middle;'>" . $sessEnd. "</td>
+														<td style='text-align:center; vertical-align:middle;'>" .$sessDay. "</td>
+														<td style='text-align:center; vertical-align:middle;'>" .$speakerFname. " "  .$speakerLname. "</td></tr>";	
 														
 														echo " <input type=\"hidden\" name='".$sessID."' value='".$sessID."'>";
 														echo " <input type=\"hidden\" name='name".$sessID."' value='".$sessName."'>";
@@ -600,24 +631,21 @@ Licence URI: http://www.os-templates.com/template-terms
 								
 
 						echo "</table>";
-							
+					
 							?><br>
 							
 															
-						<!--Payment Method:
-							<select name="pMethod" id="pMethod" autocomplete=off>
+						Payment Method:
+							<select name="pMethod" id="pMethod" autocomplete=off class="twitter">
 								<option value=""selected>--</option>
 								<option value="Paypal">Paypal</option>
 								<option value="Visa/Mastercard">Visa/Mastercard</option>
 							</select>
-							<br><br>-->
-							
-
-							
-						
-						<input type="submit" name="Submit" value="Participate >>" class="myButton" id="deez" onclick="return valthis()">
-						<button type="reset" class="clButton"  value="Reset">Clear</button>
-						<button onclick="history.go(-1);" class="backButton" value="back"><< Back to Conference Selection</button>
+							<br>
+											
+						<input type="submit" name="Submit" value="Participate >>" class="button" style="float:right;  border: 1px solid black;" id="deez" onclick="return valthis()">
+						<button type="reset"  class="button"  style="float:right; background-color:white; color:black;  border: 1px solid black;" value="Reset">Clear</button>
+						<button onclick="history.go(-1);" stye=" border: 1px solid black;" class="button" value="back"><< Back to Conference Selection</button>
 
 						
 						<script type="text/javascript">
@@ -649,6 +677,9 @@ Licence URI: http://www.os-templates.com/template-terms
     <div class="clear"></div>
   </main>
 </div>
+
+
+
 <div class="wrapper row4">
   <footer id="footer" class="hoc clear"> 
     <div class="center btmspace-80">
