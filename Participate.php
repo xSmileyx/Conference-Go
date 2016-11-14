@@ -652,7 +652,7 @@ Licence URI: http://www.os-templates.com/template-terms
 											
 						<input type="submit" name="Submit" value="Participate >>" class="button" style="float:right;  border: 1px solid black;" id="deez" onclick="return valthis()">
 						<button type="reset"  class="button"  style="float:right; background-color:white; color:black;  border: 1px solid black;" value="Reset">Clear</button>
-						<button onclick="history.go(-1);" stye=" border: 1px solid black;" class="button" value="back"><< Back to Conference Selection</button>
+						<button onclick="history.go(-1);" style=" border: 1px solid black;" class="button" value="back"><< Back to Conference Selection</button>
 
 						
 						<script type="text/javascript">

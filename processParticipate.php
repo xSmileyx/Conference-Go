@@ -318,7 +318,7 @@ if(isset($_POST["Submit"]))//checks if the submit button is selected
 /*---------------------------------------------------------------------------------------------------------------------------------------------------*/
 		
 	
-		$SQLquery = "SELECT DISTINCT * FROM tblsession GROUP BY session_day";
+		$SQLquery = "SELECT DISTINCT * FROM tblsession ORDER BY session_day";
 		$QueryResult = $conn->query($SQLquery);
 		echo "<br>";
 

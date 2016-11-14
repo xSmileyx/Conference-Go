@@ -152,7 +152,7 @@ Licence URI: http://www.os-templates.com/template-terms
 						-->
 					
 
-					<button onclick="location.href ='../test/Login.php';" class="button" >Back to login</button>
+					<button onclick="location.href ='../test2/Login.php';" class="button" >Back to login</button>
 					<input type="submit" value="Submit" name="submit" class="button">
 					<button type="reset" value="Reset" name="reset" class="button">Reset</button>
 
@@ -312,7 +312,8 @@ if(isset($_POST["submit"]))//checks if the submit button is selected
 						//checks if there's any error on adding the values
 						if ($conn->query($SQLquery) === TRUE)
 							{
-								 echo "<script language='javascript'>alert('You have succesfully registered!!');</script>"; 
+								 echo "<script language='javascript'>alert('You have successfully registered!!');</script>"; 
+								 echo "<script language='javascript'>alert('You have successfully registered!!');</script>"; 
 							}
 						else 
 							{

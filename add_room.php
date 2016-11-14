@@ -53,11 +53,11 @@
         		
         		<tr>
                 	<td width="160" align="left" valign="top"><p>Room Type</p></td>
-       	            <td><input type="text" name="type" style="width:80%;" class="twitter" /></td>
+       	            <td><input type="text" id="type" name="type" style="width:80%;" class="twitter" /></td>
                 </tr>
             	<tr><input type="hidden" name="room_id" value="<?php echo mt_rand(10001,99999);?>" />
                 	<td height="60"></td>
-                	<td><div style="float:left;"><input type="submit" name="submit" class="button" value="Submit"/></div><div style="text-align:center;"><input type="reset" name="reset" class="button" value="Clear"/></div></td>
+                	<td><div style="float:left;"><input type="submit" name="submit" class="button" onclick="return validate();" value="Submit"/></div><div style="text-align:center;"><input type="reset" name="reset" class="button" value="Clear"/></div></td>
                 </tr>
             </table>
         </form>
@@ -65,6 +65,23 @@
 </div>
 	  
 </div>
+<script>
+function validate()
+{
+	if(document.getElementById('bHotel').value == '')
+	{		
+		alert("Please select a hotel.");
+		return false;
+	}
+	
+	if(document.getElementById('type').value == '')
+	{		
+		alert("Please enter a room type.");
+		return false;
+	}
+	
+}
+</script>
 	  
 
 <!--include footer-->
