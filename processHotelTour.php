@@ -292,7 +292,7 @@ if(isset($_POST["Submit"]))//checks if the submit button is selected
 				echo "<br>Number of adults staying: ". $numAdults;
 				echo "<br>Number of Children staying ". $numChildren;
 				
-				@$body .=  "<br><br>Hotel Reservation Request (Request ID : " .$reqID. ")
+				@$body =  "<br><br>Hotel Reservation Request (Request ID : " .$reqID. ")
 				  <br><b>Name of requester</b> : " .$logFirstName. " " .$logSurName.
 				 "<br><b>Email of requester</b> : " .$logEmail. 
 				 "<br><b>Phone number of requester</b> : " .$logPhone.

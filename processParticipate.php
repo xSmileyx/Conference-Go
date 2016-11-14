@@ -230,7 +230,7 @@ if(isset($_POST["Submit"]))//checks if the submit button is selected
 			
 		$ref = $_POST["refNum"];
 		$_SESSION["ref_num"] = $ref;
-		$body = "Hello there, ".$logFirstName. " " .$logSurName. "! You have successfully participated.<br>Here are you participation details: <br><br>";
+		$body = "Hello there, ".$logFirstName. " " .$logSurName. "! You have successfully participated.<br>Here are your participation details: <br><br>";
 
 
 		echo "<b>Conference Title</b><br> $confName <br>
