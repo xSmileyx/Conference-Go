@@ -9,6 +9,26 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <link href="layout/styles/layout.css" rel="stylesheet" type="text/css" media="all">
+<script>
+						document.querySelector('input[list]').addEventListener('input', function(e) {
+    var input = e.target,
+        list = input.getAttribute('list'),
+        options = document.querySelectorAll('#' + list + ' option'),
+        hiddenInput = document.getElementById(input.id + '-hidden'),
+        inputValue = input.value;
+
+    hiddenInput.value = inputValue;
+
+    for(var i = 0; i < options.length; i++) {
+        var option = options[i];
+
+        if(option.innerText === inputValue) {
+            hiddenInput.value = option.getAttribute('data-value');
+            break;
+        }
+    }
+});
+</script>
 </head>
 <body id="top"> <?php if($_SESSION["user_name"]) { ?>
 
@@ -32,7 +52,7 @@
                  <?php
 					$query = "SELECT conf_id,conf_name,conf_enddate from tblconference WHERE conf_enddate >=CURDATE()";
 					$result = mysql_query($query);
-					echo "<select name='conf_id'>";
+					echo "<select name='conf_id' class='twitter'>";
 					echo "<option value='0'>-Select-</option>";
 					while($row = mysql_fetch_array($result))
 					{
@@ -49,14 +69,38 @@
 					$query = "SELECT speaker_id,speaker_firstname,speaker_lastname from tblspeaker ";
 					$result = mysql_query($query);
 					
-					echo "<input list='speaker' name='speaker_id'>";
+					echo "<input list='speaker' class='twitter' id='s_id' autocomplete='off'>";
 					echo "<datalist id='speaker'>";
 					while($row = mysql_fetch_array($result))
 					{
-    					echo "<option value='".$row['speaker_id']."'>".$row['speaker_firstname']." ".$row['speaker_lastname']."</option>";
+    					echo "<option data-value='".$row['speaker_id']."'>".$row['speaker_firstname']." ".$row['speaker_lastname']."</option>";
 					}
 					echo "</datalist>";
 				?>
+				<input type="hidden" name="speaker_id" id="s_id-hidden">
+				<script>
+							document.querySelector('input[list]').addEventListener('input', function(e)
+							{
+								var input = e.target,
+								list = input.getAttribute('list'),
+								options = document.querySelectorAll('#' + list + ' option'),
+								hiddenInput = document.getElementById(input.id + '-hidden'),
+								inputValue = input.value;
+								hiddenInput.value = inputValue;
+
+								for(var i = 0; i < options.length; i++) 
+								{
+									var option = options[i];
+
+									if(option.innerText === inputValue)
+										{
+											hiddenInput.value = option.getAttribute('data-value');
+											break;
+										}
+								}
+							});
+						</script>
+				<input type="hidden" name="answer" id="user-hidden">
                 </td>
             </tr>
 
