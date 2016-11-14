@@ -76,7 +76,7 @@
 									AND tblspeaker.speaker_id = tblsession.speaker_id 
 									AND tblsession_participant.p_id = '$logID'
 									AND tblsession_participant.conf_id = '$get_confID'
-								GROUP BY session_name";
+								GROUP BY session_day";
 					$QueryResult = $conn->query($SQLquery);
 	
 

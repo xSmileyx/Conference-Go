@@ -318,7 +318,7 @@ if(isset($_POST["Submit"]))//checks if the submit button is selected
 /*---------------------------------------------------------------------------------------------------------------------------------------------------*/
 		
 	
-		$SQLquery = "SELECT * FROM tblsession";
+		$SQLquery = "SELECT DISTINCT * FROM tblsession GROUP BY session_day";
 		$QueryResult = $conn->query($SQLquery);
 		echo "<br>";
 
@@ -426,6 +426,8 @@ if(isset($_POST["Submit"]))//checks if the submit button is selected
 										// echo "<font color=red><p>Unable to create the records.<br />
 												// Error Code ". $conn->errno." : ". $conn->error." </font></p>";
 									}
+									
+								continue;
 
 							
 							}			
@@ -467,6 +469,8 @@ if(isset($_POST["Submit"]))//checks if the submit button is selected
 										// echo "<font color=red><p>Unable to create the records.<br />
 												// Error Code ". $conn->errno." : ". $conn->error." </font></p>";
 									}
+									
+									continue;
 								
 								
 							}		
@@ -510,8 +514,11 @@ if(isset($_POST["Submit"]))//checks if the submit button is selected
 										// echo "<font color=red><p>Unable to create the records.<br />
 												// Error Code ". $conn->errno." : ". $conn->error." </font></p>";
 									}
+									
+									continue;
 								
 							}
+							
 							
 							
 					}

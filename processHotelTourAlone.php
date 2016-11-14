@@ -411,7 +411,7 @@ if(isset($_POST["Submit"]))//checks if the submit button is selected
 									echo "<strong>TOUR " .$selected. "</strong><br>";
 									echo "Booking ID: " .$tourBookingID. "<br>";
 									echo "The tour, " .$tourName. " is located at " .$tourLocation;
-									echo "<br>The tour will be around " .$tourDuration. " hour(s) long";
+									echo "<br>The tour will be around " .$tourDuration. " long";
 									echo "<br>The tour starts at " .$tourStartTime. " on the " .$dateFormat;
 									echo "<br>It will be RM" .$tourPrice. " per person.";
 									echo "<br><br></fieldset>";

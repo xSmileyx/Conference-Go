@@ -404,6 +404,13 @@ Licence URI: http://www.os-templates.com/template-terms
 									{	
 										$conferenceStartDate = date('d M Y', strtotime($row['conf_startdate']));
 										$conferenceEndDate = date('d M Y', strtotime($row['conf_enddate']));
+										
+										$startDate = $row['conf_startdate'];
+										$endDate = $row['conf_enddate'];
+										
+										$_SESSION['cStartDate'] = $startDate;
+										$_SESSION['cEndDate'] = $endDate;
+										
 										$start = strtoupper($conferenceStartDate);
 										$end = strtoupper($conferenceEndDate);
 										echo "<strong>" .$start. "</strong> until <strong>" .$end. "</strong>";
