@@ -23,6 +23,8 @@
 	$pVenue = $_SESSION["pVenue"];
 	//$chosen_conference = $_SESSION["chosen_conference"];
 	$ref = $_SESSION["ref_num"];
+	$conf_start_date = $_SESSION['cStartDate'];
+	$conf_end_date = $_SESSION['cEndDate'];
 	
 
 	
@@ -165,6 +167,11 @@ Licence URI: http://www.os-templates.com/template-terms
 									
 								?>" maxlength="7" size="7" READONLY> 
 								<br><br>
+								
+							<?php 	
+									$expiryPeriodBeforeConf = date('Y-m-d', strtotime($conf_start_date. ' - 7 days'));//2017-10-06
+									$expiryPeriodAfterConf = date('Y-m-d', strtotime($conf_end_date. ' + 7 days'));//2017-10-22
+							?>
 											  
 							<strong>From</strong> <input type="date" class="twitter" name="stayFrom" style='display: inline-block; text-align:center;' id="from">
 							<strong>until</strong> <input type="date"  class="twitter" style='display: inline-block; text-align:center;' name="stayTo" id="to"><br><br>
@@ -194,11 +201,13 @@ Licence URI: http://www.os-templates.com/template-terms
 							});
 								
 								
-							document.getElementById('from').value = new Date().toDateInputValue();	
-							document.getElementById('from').setAttribute("min", new Date().toDateInputValue());
+							document.getElementById('from').value = '<?php echo $expiryPeriodBeforeConf; ?>';	
+							document.getElementById('from').setAttribute("min",'<?php echo $expiryPeriodBeforeConf; ?>');
+							document.getElementById('from').setAttribute("max",'<?php echo $expiryPeriodAfterConf; ?>');
 							
-							document.getElementById('to').value = new Date().toDateInputValue();	
-							document.getElementById('to').setAttribute("min", new Date().toDateInputValue());
+							document.getElementById('to').value = '<?php echo $expiryPeriodBeforeConf; ?>';	
+							document.getElementById('to').setAttribute("min", '<?php echo $expiryPeriodBeforeConf; ?>');
+							//document.getElementById('to').setAttribute("max", '<?php echo $expiryPeriodAfterConf; ?>');
 							
 							</script>
 							
@@ -401,90 +410,85 @@ Licence URI: http://www.os-templates.com/template-terms
 							
 							Phone Number: <?php echo $logPhone; ?> <font color=red>(to be contacted for further information)</font><br><br>	
 								
-								
-		
-
-								
-							
-	 <table border='1px' >
-           
-            <tr id=tHeader>
-            <th>Tour Listing</th>
-            <th>Price(RM)</th>
-			<th>Commencement Date</th>
-			<th>Action</th>
-			</tr>
-
 			
-			<form  method="post" name="pForm" id="participation">
-            <?php
-	  			$sql = "SELECT * FROM tbltour";
+				<form  method="post" name="pForm" id="participation">
+				<?php
+							
+							// $expiryPeriodBeforeConf = strtotime("-7 days");
+							// $expiryPeriodAfterConf = strtotime("+7 days");
+							
+							$expiryPeriodBeforeConf = date('Y-m-d', strtotime($conf_start_date. ' - 7 days'));//2017-10-06
+							$expiryPeriodAfterConf = date('Y-m-d', strtotime($conf_end_date. ' + 7 days'));//2017-10-22
+							
+							
+							$sql = "SELECT * 
+								    FROM tbltour 
+									WHERE  validity >= '$expiryPeriodBeforeConf' AND validity <= '$expiryPeriodAfterConf'";
+							
+							$QueryResult = $conn->query($sql);
+							
+							
+							if($QueryResult->num_rows == 0)
+							{
+								echo "There is no tours available around the conference dates.";
+							}
+							else
+							{
+								?>
+								 <table border='1px' >
+			   
+									<tr id=tHeader>
+									<th>Tour Listing</th>
+									<th>Price(RM)</th>
+									<th>Commencement Date</th>
+									<th>Action</th>
+									</tr>
 
-	  			$QueryResult = $conn->query($sql);
-
-	   			if($QueryResult->num_rows == 0)
-				{
-					echo "No result found";
-				}
-				else
-				{
+								<?php
+								while(($row = $QueryResult->fetch_assoc()) != false)
+								{
+									//$rID = mt_rand(100001,999999);
+					
+									$tourID = $row["tour_id"];
+									$name = $row["tour_name"];
+									$location = $row["tour_location"];
+									$startTime = $row["tour_starttime"];
+									$duration = $row["tour_duration"];
+									$price = $row["tour_price"];						
+									
+									//echo "<tr><td style='vertical-align:middle;'>$rID</td><input type='hidden' name='tourBookingID[]' value='$rID'/>";
+									echo "<td bgcolor='#FFFFFF' width='70%'>
+											<strong>Tour Name</strong>: $name<a data-id='" .$tourID. "' data-toggle=\"modal\" data-target=\"#myModal\" class=\"open-details\"><i class=\"fa fa-info-circle\" style='float:right; color:#373737' aria-hidden=\"true\"></i></a>
+											<br />
+											<strong>Location</strong>: $location
+											<br/>
+											<strong>Start Time</strong>: $startTime
+											<br/>
+											<strong>Duration</strong>: $duration hour(s)
+									</td>";
+									echo "<td bgcolor='#FFFFFF' style='vertical-align:top;'>
+											<br/>
+											$price<br>  
+									</td>";
+									echo "<td bgcolor='#FFFFFF' style='vertical-align:top;'>
+											<br/>
+											<input type=\"date\" id='date" .$tourID. "' class=\"twitter\" name='tourDate" .$tourID. "' style='display: inline-block; text-align:center; width:100%;' disabled><br>  
+									</td>";
+									echo "<td bgcolor='#FFFFFF' width='10%' style='vertical-align:top;'><br/><input type=\"checkbox\" id=\"chosenTour[]\" name=\"chosenTour[]\" value=\"$tourID\" style='margin-left:auto; margin-right:auto;' onchange=\"if(this.checked){document.getElementById('date" .$tourID. "').disabled = false; document.getElementById('date" .$tourID. "').value = '$expiryPeriodBeforeConf'	}else{document.getElementById('date" .$tourID. "').disabled = true; document.getElementById('date" .$tourID. "').value = '';}\"/> </tr>";
+									
+									echo "<script>								
 								
-					$sql = "SELECT * FROM tbltour";
-					$QueryResult = $conn->query($sql);
+										
+										
+									
+									document.getElementById('date" .$tourID. "').setAttribute(\"min\", '".$expiryPeriodBeforeConf."');
+									document.getElementById('date" .$tourID. "').setAttribute(\"max\", '".$row['validity']."');</script>";
+								}
+								echo "	</table>";
+							}
 						
-					while(($row = $QueryResult->fetch_assoc()) != false)
-					{
-						
-						$sql = "SELECT * FROM tbltour";
-						$QueryResult = $conn->query($sql);
-						
-						while(($row = $QueryResult->fetch_assoc()) != false)
-						{
-							//$rID = mt_rand(100001,999999);
-			
-							$tourID = $row["tour_id"];
-							$name = $row["tour_name"];
-							$location = $row["tour_location"];
-							$startTime = $row["tour_starttime"];
-							$duration = $row["tour_duration"];
-							$price = $row["tour_price"];						
-							
-							//echo "<tr><td style='vertical-align:middle;'>$rID</td><input type='hidden' name='tourBookingID[]' value='$rID'/>";
-							echo "<td bgcolor='#FFFFFF' width='70%'>
-									<strong>Tour Name</strong>: $name<a data-id='" .$tourID. "' data-toggle=\"modal\" data-target=\"#myModal\" class=\"open-details\"><i class=\"fa fa-info-circle\" style='float:right; color:#373737' aria-hidden=\"true\"></i></a>
-									<br />
-									<strong>Location</strong>: $location
-									<br/>
-									<strong>Start Time</strong>: $startTime
-									<br/>
-									<strong>Duration</strong>: $duration hour(s)
-							</td>";
-							echo "<td bgcolor='#FFFFFF' style='vertical-align:top;'>
-									<br/>
-									$price<br>  
-							</td>";
-							echo "<td bgcolor='#FFFFFF' style='vertical-align:top;'>
-									<br/>
-									<input type=\"date\" id='date" .$tourID. "' class=\"twitter\" name='tourDate" .$tourID. "' style='display: inline-block; text-align:center; width:100%;' disabled><br>  
-							</td>";
-							echo "<td bgcolor='#FFFFFF' width='10%' style='vertical-align:top;'><br/><input type=\"checkbox\" id=\"chosenTour[]\" name=\"chosenTour[]\" value=\"$tourID\" style='margin-left:auto; margin-right:auto;' onchange=\"if(this.checked){document.getElementById('date" .$tourID. "').disabled = false; document.getElementById('date" .$tourID. "').value = new Date().toDateInputValue();	}else{document.getElementById('date" .$tourID. "').disabled = true; document.getElementById('date" .$tourID. "').value = '';}\"/> </tr>";
-							
-							echo "<script>								
-							Date.prototype.toDateInputValue = (function() {
-								var local = new Date(this);
-								local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
-								return local.toJSON().slice(0,10);
-							});
-								
-								
-							
-							document.getElementById('date" .$tourID. "').setAttribute(\"min\", new Date().toDateInputValue());
-							document.getElementById('date" .$tourID. "').setAttribute(\"max\", '".$row['validity']."');</script>";
-						}
-					}
-					echo "	</table>";
-				}
-	   		?><br>
+					
+				?><br>
 
 						
 					</div>
