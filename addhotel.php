@@ -26,23 +26,33 @@ if(isset($_POST['submit']))
       
 	$hotel_name=$_POST['hotel_name'];
 	$hotel_address=$_POST['address'];
-	$hotel_city=$_POST['city'];
-	$hotel_state=$_POST['state'];
-	$hotel_zipcode=$_POST['zipcode'];
+	
+	 $hotel_image = rand(1000,100000)."-".$_FILES['hotel_image']['name'];
+	 $file_loc = $_FILES['hotel_image']['tmp_name'];
+	 $folder="uploads/";
+	 move_uploaded_file($file_loc,$folder.$hotel_image);
+	
 	$description=$_POST['description'];
 	$contact=$_POST['contact'];
 	$minRoomRate=$_POST['roomRate'];
 	$featureAmenities=$_POST['feature_amenities'];
 
-	$sql="INSERT INTO tblhotel (hotel_id,hotel_name,hotel_address,hotel_city,hotel_state,hotel_zipcode,hotel_location_desc,hotel_contact,room_rate,hotel_feature_amenities)
+	$sql="INSERT INTO tblhotel (hotel_id,hotel_name,hotel_address,hotel_image,hotel_location_desc,hotel_contact,room_rate,hotel_feature_amenities)
 
-	VALUES('','$hotel_name','$hotel_address','$hotel_city','$hotel_state','$hotel_zipcode','$description','$contact','$minRoomRate','$remark','$featureAmenities')";
+	VALUES('','$hotel_name','$hotel_address','$hotel_image','$description','$contact','$minRoomRate','$featureAmenities')";
 
-	mysql_query($sql);
-
-	echo 'Hotel has been added successfully';
-	echo '</br>';
-	echo '<a href="dashboard.php">Click here to return to dashboard</a>';
+	 if(mysql_query($sql) === TRUE)
+		{
+			//echo "<script language='javascript'>alert('Reference Number: $get_conf_id has been successfully deleted! The Event Manager will contact you for the disclosure of refund.');</script>";
+			echo 'Hotel has been added successfully';
+			echo '</br>';
+			echo '<a href="dashboardadmin.php">Click here to return to dashboard</a>';  
+		}
+		else
+		{
+			echo $sql;
+			echo "<br><font color = \"red\">Failed to add a record.</font>" .mysql_error();
+		} 
 
 }
 

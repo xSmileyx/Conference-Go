@@ -55,7 +55,7 @@ if(isset($_GET['rowid'])) {
 <br>
 <h5><b><u>Validity</u></b></h5>
 <p>Until <?php $date=date_create($row["validity"]); echo date_format($date,"jS F Y"); ?></p>
-
+<br>
 <hr>
 
 <?php 			}

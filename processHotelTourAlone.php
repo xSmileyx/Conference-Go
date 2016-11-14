@@ -227,10 +227,21 @@ if(isset($_POST["Submit"]))//checks if the submit button is selected
 				$numAdults = $_POST["numAdults"];
 				$numChildren = $_POST["numChildren"];
 				
-				// $logFirstName = $_SESSION["log_firstname"];
-				// $logSurName = $_SESSION["log_surname"];
-				// $logEmail = $_SESSION["log_email"];
-				// $logPhone = $_SESSION["log_phone"];
+				$SQLquery = "SELECT * FROM tblroom WHERE room_id = '$preferredRoom'";
+				$QueryResult = $conn->query($SQLquery);
+				
+				if($QueryResult->num_rows == 0)
+					{
+						//echo "<script language='javascript'>alert('This conference reference number is not within the database.');</script>";
+					}
+				else
+					{
+						// output data of each row
+						while(($row = $QueryResult->fetch_assoc()) != false)
+							{
+								$roomName = $row["room_type"];
+							}
+					}
 				
 				$sdate = date('d M Y', strtotime($stayFrom));
 				$edate = date('d M Y', strtotime($stayTo));

@@ -464,7 +464,7 @@ Licence URI: http://www.os-templates.com/template-terms
 											<br/>
 											<strong>Start Time</strong>: $startTime
 											<br/>
-											<strong>Duration</strong>: $duration hour(s)
+											<strong>Duration</strong>: $duration
 									</td>";
 									echo "<td bgcolor='#FFFFFF' style='vertical-align:top;'>
 											<br/>

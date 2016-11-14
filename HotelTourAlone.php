@@ -37,6 +37,12 @@ Licence URI: http://www.os-templates.com/template-terms
 <link href="layout/styles/layout.css" rel="stylesheet" type="text/css" media="all">
 
 
+	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDig83sIOyi0hetUYaoD1_4IdmbIT2FGWc&libraries=places"></script>
+	<script src="https://www.jscache.com/wejs?wtype=socialButtonIcon&amp;uniq=221&amp;locationId=298309&amp;color=green&amp;size=rect&amp;lang=en_US&amp;display_version=2"></script>	
+	<script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+	<script type="text/javascript" src="scripts/jquery-1.11.0.min.js"></script>
+	
+	
 	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
   
 <!-- 	<script type="text/javascript" src="scripts/jquery-1.11.0.min.js"></script>
@@ -471,10 +477,10 @@ Licence URI: http://www.os-templates.com/template-terms
 
 								
 							
-	  <table border='1px' >
+	  <table border='1px'  >
            
             <tr id=tHeader>
-            <th>Tour Listing</th>
+            <th style="text-align:center;">Tour Listing</th>
             <th>Price (RM)</th>
             <th>Commencement Date</th>
 			<th> Action</th>
@@ -483,17 +489,11 @@ Licence URI: http://www.os-templates.com/template-terms
 			
 			<form  method="post" name="pForm" id="participation">
             <?php
-	  			$sql = "SELECT * FROM tbltour";
-
-	  			$QueryResult = $conn->query($sql);
-
-	   			if($QueryResult->num_rows == 0)
-				{
-					echo "No result found";
-				}
-				else
-				{
-								
+					
+					$date = date('Y-m-d');
+			
+					$commencement = date('Y-m-d', strtotime($date. ' + 1 days'));
+	
 					$sql = "SELECT * FROM tbltour";
 					$QueryResult = $conn->query($sql);
 						
@@ -515,7 +515,7 @@ Licence URI: http://www.os-templates.com/template-terms
 							$price = $row["tour_price"];						
 							
 							//echo "<tr><td style='vertical-align:middle;'>$rID</td><input type='hidden' name='tourBookingID[]' value='$rID'/>";
-							echo "<td bgcolor='#FFFFFF' width='70%'>
+							echo "<td bgcolor='#FFFFFF' width='70%' style='text-align:center;' >
 									<strong>Tour Name</strong>: $name<a data-id='" .$tourID. "' data-toggle=\"modal\" data-target=\"#myModal\" class=\"open-details\"><i class=\"fa fa-info-circle\" style='float:right; color:#373737' aria-hidden=\"true\"></i></a>
 									<br />
 									<strong>Location</strong>: $location
@@ -532,7 +532,7 @@ Licence URI: http://www.os-templates.com/template-terms
 									<br/>
 									<input type=\"date\" id='date" .$tourID. "' class=\"twitter\" name='tourDate" .$tourID. "' style='display: inline-block; text-align:center; width:100%;' disabled><br>  
 							</td>";
-							echo "<td bgcolor='#FFFFFF' width='10%' style='vertical-align:top;'><br/><input type=\"checkbox\" id=\"chosenTour[]\" name=\"chosenTour[]\" value=\"$tourID\" style='margin-left:auto; margin-right:auto;' onchange=\"if(this.checked){document.getElementById('date" .$tourID. "').disabled = false; document.getElementById('date" .$tourID. "').value = new Date().toDateInputValue();	}else{document.getElementById('date" .$tourID. "').disabled = true; document.getElementById('date" .$tourID. "').value = '';}\"/> </tr>";
+							echo "<td bgcolor='#FFFFFF' width='10%' style='vertical-align:top;'><br/><input type=\"checkbox\" id=\"chosenTour[]\" name=\"chosenTour[]\" value=\"$tourID\" style='margin-left:auto; margin-right:auto;' onchange=\"if(this.checked){document.getElementById('date" .$tourID. "').disabled = false; document.getElementById('date" .$tourID. "').value = '".$commencement."';	}else{document.getElementById('date" .$tourID. "').disabled = true; document.getElementById('date" .$tourID. "').value = '';}\"/> </tr>";
 							
 							echo "<script>
 								
@@ -546,12 +546,12 @@ Licence URI: http://www.os-templates.com/template-terms
 								
 								
 							
-							document.getElementById('date" .$tourID. "').setAttribute(\"min\", new Date().toDateInputValue());
+							document.getElementById('date" .$tourID. "').setAttribute(\"min\", '".$commencement."');
 							document.getElementById('date" .$tourID. "').setAttribute(\"max\", '".$row['validity']."');</script>";
 						}
 					}
 					echo "	</table>";
-				}
+				
 	   		?><br>
 							
 						

@@ -22,7 +22,6 @@ if(isset($_GET['cid']) && isset($_GET['pid'])) {
 	
 	echo "<table border='1px' >
 			<tr id=tHeader>
-				<th>Participation Type</th>
 				<th>Session Name</th>
 				<th>Session Day</th>
 				<th>Session Start Time</th>
@@ -52,7 +51,7 @@ if(isset($_GET['cid']) && isset($_GET['pid'])) {
 				{
 						$cName = $row["conf_name"];
 						$cVenue = $row['venue_name'];
-						echo "<tr><td>" .$row['participation_type']. "</td>
+						echo "<tr>
 						      <td>" .$row['session_name']. "</td>
 							  <td>" .$row['session_day']. "</td>
 							  <td>" .$row['session_starttime']. "</td>
