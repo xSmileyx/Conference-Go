@@ -6,6 +6,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <link href="layout/styles/layout.css" rel="stylesheet" type="text/css" media="all">
+<link href="layout/styles/ray.css" rel="stylesheet" type="text/css" media="all">
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDig83sIOyi0hetUYaoD1_4IdmbIT2FGWc&libraries=places"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>  
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
 </head>
 <body id="top"> <?php if($_SESSION["user_name"]) { ?>
@@ -157,7 +161,7 @@ echo '</tr>';
 		// Your while loop here
 		echo '<tr>';
 echo '<td>'.$row[0].'</td>';
-echo '<td>'.$row[1].'</td>';
+echo "<td>".$row[1]."<a data-id='" .$row[0]. "' data-toggle=\"modal\" data-target=\"#myModal\" class=\"open-details\"><i class=\"fa fa-info-circle\" style='float:right; color:#373737' aria-hidden=\"true\"></i></a></td>";
 echo '<td>'.$row[2].'</td>';
 echo '</tr>';
 		}
@@ -167,7 +171,48 @@ echo '</table>';
 
 <?=$pagination?>
 	   
+</div>
+
+<?php
+// close connection
+mysql_close();
+?>
       </div>
+	 <!-- Modal -->
+  <div class="modal hide" data-easein="fadeInDown" data-easeout="fadeOutDown" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" id="myModal" >
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i></button>
+        </div>
+        <div class="modal-body">
+		  <div id="details"></div>
+        </div>		
+        <div class="modal-footer">
+		<hr>
+        </div>
+      </div>
+    </div>
+  </div>
+	  	  <script>
+	  $(document).on("click", ".open-details", function () {
+		 var pID = $(this).data('id');
+		 
+			 if (window.XMLHttpRequest) {
+			// code for IE7+, Firefox, Chrome, Opera, Safari
+				xmlhttp = new XMLHttpRequest();
+			} 
+			xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					document.getElementById("details").innerHTML = this.responseText;
+				}
+			};
+			xmlhttp.open("GET","fetchspeakerdetails.php?rowid="+pID,true);
+			xmlhttp.send();
+	});
+	  </script>	
       <!--include footer-->
 <?php include 'footer.php';?> <?php } ?>
 </body>

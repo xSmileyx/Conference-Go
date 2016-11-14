@@ -2,7 +2,7 @@
     <!-- / main body -->
   </main>
 </div>
-<div class="wrapper row4" style="background-image:url('images/demo/backgrounds/04.jpg');">
+<div class="wrapper row4" style="background-image:url('images/demo/backgrounds/');">
   <footer id="footer" class="hoc clear"> 
     <div class="center btmspace-80">
       <h2 class="heading">Final Year Project</h2>

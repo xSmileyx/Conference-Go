@@ -37,7 +37,7 @@ echo '<h2 style="color: blue;font-family: arial" align=center>List of sponsors</
 echo '<table border=1  table id=table1 align=center>';
 echo '<tr>';
 echo '<td>Conference ID</td>';
-echo '<td>Speaker name</td>';
+echo '<td>Sponsor name</td>';
 echo '<td>Amount provided</td>';
 echo '</tr>';
 

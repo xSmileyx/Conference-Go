@@ -1,6 +1,5 @@
-
 <?php session_start();?> <!DOCTYPE html>
- 
+
 <html>
 <head>
 <title>Conference management</title>
@@ -13,48 +12,55 @@
 <!--include navigation bar-->
 <?php include'nav.php';?>
 
-
 <div class="wrapper row3">
   <main class="hoc container clear"> 
     <!-- main body -->
     <div class="content three_quarter first"> 
       <div class="scrollable">
-<?php
+       <?php
 include 'dbconnection.php';
-$conf_id = $_POST['conf_id']; 
-$query = "SELECT * FROM tblpasstype WHERE conf_id='$conf_id'";
-$executeQuery=mysql_query($query);
-if (!$executeQuery)
 
+$query="SELECT tbldashboard.dash_id, tbldashboard.dash_name, tbldashboard.conf_id, tblconference.conf_name 
+		FROM tbldashboard
+		INNER JOIN tblconference ON tbldashboard.conf_id = tblconference.conf_id" ;
+
+$executeQuery=mysql_query($query);
+
+if (!$executeQuery)
 {
  die ('Could not connect'.mysql_error());
 }
+$query_info=mysql_query($query) or die(mysql_error());
+$query_info_count=mysql_num_rows($query_info);
 
-echo '<h2 style="color: blue;font-family: arial" align=center>List of Conference passes</h2>';
 
-echo '<table border=1  table id=table1 align=center>';
+echo '<h2 style="color: blue;font-family: arial" align=center>List of Conference pages</h2>';
+
+
+echo '<table border=0  table id=table1 align=center cellspacing="10px">';
 echo '<tr>';
-echo '<td>Pass ID</td>';
-echo '<td>Pass type</td>';
-echo '<td>Price</td>';
-echo '<td>Amount of passes</td>';
+echo '<td>Page Name &nbsp;&nbsp;&nbsp;</td>';
+echo '<td>Conference Name &nbsp;&nbsp;&nbsp;</td>';
 echo '</tr>';
 
 while ($row=mysql_fetch_row($executeQuery))
 {
+	
 echo '<tr>';
-echo '<td>'.$row[0].'</td>';
 echo '<td>'.$row[1].'</td>';
 echo '<td>'.$row[3].'</td>';
-echo '<td>'.$row[4].'</td>';
+echo "<td><form method='post' action='viewconfpage.php'><input type='hidden' name='dash_id' value='".$row[0]."'><input type='submit' class='button' value='View'></form></td>";
 echo '</tr>';
 }
-
 echo '</table>';
 
 ?>
+<?php
+// close connection
+mysql_close();
+?>
       </div>
-      <!--include footer-->
+     <!--include footer-->
 <?php include 'footer.php';?> <?php } ?>
 </body>
 </html>

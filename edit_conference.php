@@ -67,17 +67,17 @@ $row = mysql_fetch_array($result);
             	<td align="left" valign="middle"><p>Number of pass</p></td>
                 <td colspan="2"><input type="number" name="conf_numpass" class="twitter" value="<?php echo $row[4];?>"  required /></td>
             </tr>
-            <tr>
+			<tr>
             	<td align="left" valign="middle"><p>Current caterer</p></td>
                 <td colspan="2"><input type="number" name="" class="twitter" value="<?php echo $row[5];?>" disabled /></td>
             </tr>
             <tr>
             	<td align="left" valign="middle"><p>Caterer id</p></td>
-                <td width="80">	     
+                <td width="80" colspan="2">	     
                  <?php
 					$query = "SELECT caterer_id,caterer_name from tblcaterer ";
 					$result = mysql_query($query);
-					echo "<select name='caterer_id'>";
+					echo "<select name='caterer_id' class='twitter'>";
 					echo "<option value='0'>-Select-</option>";
 					
 					while($row = mysql_fetch_array($result))
@@ -115,12 +115,11 @@ $row = mysql_fetch_array($result);
 					echo "<option value='0'>-Select-</option>";
 					while($row = mysql_fetch_array($result))
 					{
-    					echo "<option value='".$row['venue_id']."'>".$row['venue_name']."</option>";
+    					echo "<option value='".$row['venue_id']."'>".$row['venue_id']."-".$row['venue_name']."</option>";
 					}
 					echo "</select>";
 				?>
                 </td>
-                <td><a href="viewvenues.php?page=1" target="_blank">Venue list</a></td>
             </tr>
             
             <tr><?php
@@ -167,10 +166,9 @@ $row = mysql_fetch_array($result);
             	<td colspan="2"><textarea name="conf_desc"><?php echo $row[8];?></textarea></td>   
             </tr>  
             <tr align="left">
-                    <td></td>
-                    <td><input type="hidden" name="conf_id" value="<?php echo $row[0];?>"></td>
-                	<td><input type="reset" name="reset" class="button" value="Clear"/></td>
-					<td align="right"><input type="submit" name="submit" class="button" value="Submit"/></td>
+					<input type="hidden" name="conf_id" value="<?php echo $row[0];?>">
+                	<td colspan="3"><input type="reset" name="reset" class="button" value="Clear"/>
+					<input type="submit" name="submit" class="button" value="Submit" onclick="return confirm('Are you sure you want to apply these changes?')" style="float:right;"/></td>
 			</tr>        
         </table>
         </form>

@@ -52,7 +52,7 @@
 	
 	/* Setup vars for query. */
 	$targetpage = "viewconfdetails.php"; 	//your file name  (the name of this file)
-	$limit = 10; 								//how many items to show per page
+	$limit = 15; 								//how many items to show per page
 	$page = $_GET['page'];
 	if($page) 
 		$start = ($page - 1) * $limit; 			//first item to display on this page
@@ -157,7 +157,7 @@
 echo '<h2 style="color: blue;font-family: arial" align=center>List of Conference</h2>';
 
 
-echo '<table border=0  table id=table1 align=center cellspacing="10px">';
+echo '<table border=0  id=table1 align="middle" cellspacing="10px">';
 echo '<tr>';
 echo '<th>Conference ID &nbsp;&nbsp;&nbsp;</th>';
 echo '<th>Conference Name name &nbsp;&nbsp;&nbsp;</th>';
@@ -199,6 +199,7 @@ echo '</table>';
 
 <?=$pagination?>
 </div>
+
 <?php
 // close connection
 mysql_close();

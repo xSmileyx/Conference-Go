@@ -39,6 +39,10 @@ if(isset($_POST['submit']))
  mysql_query($sql); 
  echo 'Speaker has been added successfully';
 echo '</br>';
+echo '</br>';
+echo '<a href="add_speaker.php">Click here to return to add another speaker</a>';
+echo '</br>';
+echo '</br>';
 echo '<a href="dashboardadmin.php">Click here to return to dashboard</a>';
 }
 else {

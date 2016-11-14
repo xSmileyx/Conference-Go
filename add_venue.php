@@ -33,8 +33,8 @@
        	            <td><input type="text" name="venue_address" class="twitter" placeholder="Enter Venue Address" required /></td>
                 </tr>
                 <tr>
-                	<td align="left" valign="top"><p>Number of rooms</p></td>
-       	            <td><input type="number" name="venue_nrooms" class="twitter" placeholder="No rooms" min="1" max="40" required  /></td>
+                	<td align="left" valign="top"><p>Venue Capacity</p></td>
+       	            <td><input type="number" name="venue_nrooms" class="twitter" placeholder="Maximum numbr of people venue can accomodate" min="1" required  /></td>
                 </tr>
             	<tr>
                 	<td height="60"></td>
