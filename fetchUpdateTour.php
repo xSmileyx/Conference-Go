@@ -1,4 +1,6 @@
-<?php include('config.php'); ?>
+<?php include('config.php'); 
+	date_default_timezone_set('Asia/Kuching');
+	$datenow = date('Y-m-d', time());?>
 
 
 <style>
@@ -20,7 +22,10 @@ if(isset($_GET['tbid']) AND isset($_GET['cpass']) AND isset($_GET['tid']))
 	$CFpass = $_GET['cpass'];
 	$tID = $_GET['tid'];
 	
-	 $SQLquery = "SELECT * FROM tbltourbookingdetails 
+	 $SQLquery = "SELECT * 
+	              FROM tbltourbookingdetails 
+				  RIGHT JOIN tbltour
+				  ON tbltourbookingdetails.tour_id = tbltour.tour_id
 				  WHERE tourbooking_id = '$tbID' AND confpass_reference = '$CFpass'";
 	 
 	 $QueryResult =  $conn->query($SQLquery);
@@ -49,7 +54,7 @@ if(isset($_GET['tbid']) AND isset($_GET['cpass']) AND isset($_GET['tid']))
 							  </td>";
 					echo "<td bgcolor='#FFFFFF' style='vertical-align:top;'>
 									<br/>
-									<input type=\"date\" id='date' class=\"twitter\" name='tourDate' style='display: inline-block; text-align:center; width:100%;' value=" .$row['tour_startday']."><br>  
+									<input type=\"date\" id='date' class=\"twitter\" name='tourDate' min=".$datenow." max=".$row['validity']." style='display: inline-block; text-align:center; width:100%;' value=" .$row['tour_startday']."><br>  
 									<input type='hidden' name='tourbid' value='".$tbID."'/>
 												<td>" .$row['booking_date']. "</td>";
 				}
@@ -69,8 +74,11 @@ else if(isset($_GET['tbid']) AND !isset($_GET['cpass']) AND isset($_GET['tid']))
 <?php
     $tbID = $_GET['tbid'];
 
-	$SQLquery = "SELECT * FROM tbltourbookingdetails 
-				  WHERE tourbooking_id = '$tbID' AND confpass_reference IS NULL";
+	$SQLquery = "SELECT * 
+				 FROM tbltourbookingdetails
+				 RIGHT JOIN tbltour
+				 ON tbltourbookingdetails.tour_id = tbltour.tour_id	
+				 WHERE tourbooking_id = '$tbID' AND confpass_reference IS NULL";
 	 
 	 $QueryResult =  $conn->query($SQLquery);
 	 
@@ -98,7 +106,7 @@ else if(isset($_GET['tbid']) AND !isset($_GET['cpass']) AND isset($_GET['tid']))
 							  </td>";
 					echo "<td bgcolor='#FFFFFF' style='vertical-align:top;'>
 									<br/>
-									<input type=\"date\" id='date' class=\"twitter\" name='tourDate' style='display: inline-block; text-align:center; width:100%;' value=" .$row['tour_startday']."><br>  
+									<input type=\"date\" id='date' class=\"twitter\" name='tourDate' min=".$datenow." max=".$row['validity']." style='display: inline-block; text-align:center; width:100%;' value=" .$row['tour_startday']."><br>  
 									<input type='hidden' name='tourbid' value='".$tbID."'/>
 												<td>" .$row['booking_date']. "</td>";
 				}

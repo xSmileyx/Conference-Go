@@ -1,4 +1,6 @@
-<?php include('config.php'); ?>
+<?php include('config.php'); 
+	date_default_timezone_set('Asia/Kuching');
+	$datenow = date('Y-m-d', time());?>
 
 
 <style>
@@ -12,6 +14,8 @@ h5{font-size:14px; margin-bottom:1px;}
 
 if(isset($_GET['bid']) AND isset($_GET['cpass']) AND isset($_GET['rid']))
 {
+	
+
 ?>
 <br><h4>Update Chosen Reservation Request</h4><hr><br>
 <form action="fetchUpdateReservation.php" method="post" name="updateReservationForm" id="updateReservationForm" >
@@ -143,7 +147,7 @@ if(isset($_GET['bid']) AND isset($_GET['cpass']) AND isset($_GET['rid']))
 							<p><strong>Special Requirements </strong>:
 							<textarea name="specialReq" style="width:50%; height:200px; margin:auto;" class="twitter"><?php echo $special_requirement; ?></textarea></p>
 							
-							<p><strong>From</strong> <input type="date" class="twitter" name="stayFrom" style='display: inline-block; text-align:center;' max="<?php echo $row['end_date'];?>" id="from" value="<?php echo $row['start_date'];?>">
+							<p><strong>From</strong> <input type="date" class="twitter" name="stayFrom" style='display: inline-block; text-align:center;' min="<?php echo $datenow; ?>" max="<?php echo $row['end_date'];?>" id="from" value="<?php echo $row['start_date'];?>">
 							<strong>until</strong> <input type="date"  class="twitter" style='display: inline-block; text-align:center;' name="stayTo" min="<?php echo $row['start_date'];?>" id="to" value="<?php echo $row['end_date'];?>"></p><br>
 	
 					<?php
@@ -290,7 +294,7 @@ else if(isset($_GET['bid']) AND !isset($_GET['cpass']) AND isset($_GET['rid']))
 							<p><strong>Special Requirements </strong>:
 							<textarea name="specialReq" style="width:50%; height:200px; margin:auto;" class="twitter"><?php echo $special_requirement; ?></textarea></p><br>
 
-							<p><strong>From</strong> <input type="date" class="twitter" name="stayFrom" style='display: inline-block; text-align:center;' max="<?php echo $row['end_date'];?>"  id="from" value="<?php echo $row['start_date'];?>">
+							<p><strong>From</strong> <input type="date" class="twitter" name="stayFrom" style='display: inline-block; text-align:center;' min="<?php echo $datenow; ?>" max="<?php echo $row['end_date'];?>"  id="from" value="<?php echo $row['start_date'];?>">
 							<strong>until</strong> <input type="date"  class="twitter"  name="stayTo" style='display: inline-block; text-align:center;' min="<?php echo $row['start_date'];?>" id="to" value="<?php echo $row['end_date'];?>"></p><br>
 
 					<?php

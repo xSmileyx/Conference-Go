@@ -72,6 +72,11 @@ Licence URI: http://www.os-templates.com/template-terms
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
 }
 
+::-webkit-scrollbar { 
+    display: none; 
+}
+
+
 .dropdown-content a {
     color: black;
     padding: 12px 16px;

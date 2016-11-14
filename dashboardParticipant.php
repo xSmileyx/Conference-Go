@@ -71,6 +71,11 @@ Licence URI: http://www.os-templates.com/template-terms
     background-color: #f9f9f9;
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+	
+}
+
+::-webkit-scrollbar { 
+    display: none; 
 }
 
 .dropdown-content a {
@@ -95,7 +100,8 @@ Licence URI: http://www.os-templates.com/template-terms
     <div class="fl_right">
       <ul class="nospace inline pushright">
 	  		 <li class="dropdown"><i class="fa fa-envelope"></i> Inbox
-				<div class="dropdown-content" style='overflow-y:scroll; height:200px;'>
+				<div class="dropdown-content" style='overflow-y:scroll; height:200px; '>
+
 				<?php
 					$SQLquery = "SELECT * FROM tblnotifications WHERE p_id = '$logID'";
 					$QueryResult = $conn->query($SQLquery);
