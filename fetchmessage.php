@@ -65,7 +65,7 @@ if(isset($_GET['nid'])) {
 		
 		
 }?><hr>
-<input type="submit" name="Submit" style="width:auto; float:right;" value="Delete" class="button" onclick="return confirm('Are you sure?');">
+<input type="submit" name="Submit" style="width:auto; float:left;" value="Delete" class="button" onclick="return confirm('Are you sure?');">
 <?php
 
  if(isset($_POST["Submit"]))//checks if the submit button is selected

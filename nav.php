@@ -1,3 +1,97 @@
+<style>
+
+
+.dropbtn {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+.dropdown:hover .dropbtn {
+    background-color: red;
+}
+
+.dropdown {
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+::-webkit-scrollbar { 
+    display: none; 
+}
+
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1; cursor: pointer;}
+
+.dropdown:hover .dropdown-content {
+	cursor: hand;
+    display: block;
+}
+</style>
+
+
+	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  
+<!-- 	<script type="text/javascript" src="scripts/jquery-1.11.0.min.js"></script>
+ -->	  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+
+ <!-- Modal -->
+  <div class="modal hide" data-easein="fadeInDown" data-easeout="fadeOutDown" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" id="myMsgModal" >
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content"  style=' overflow-y:scroll; width:500px; height:250px;'>
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i></button>
+        </div>
+        <div class="modal-body">
+		  <div id="msgdetails"></div>
+        </div>
+
+        <!--<div class="modal-footer">
+        </div>-->
+      </div>
+    </div>
+  </div>
+  
+   <script>
+	  $(document).on("click", ".open-message", function () {
+		 var eID = $(this).data('id');
+		 
+			 if (window.XMLHttpRequest) {
+			// code for IE7+, Firefox, Chrome, Opera, Safari
+				xmlhttp = new XMLHttpRequest();
+			} else {
+				// code for IE6, IE5
+				xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					document.getElementById("msgdetails").innerHTML = this.responseText;
+				}
+			};
+			xmlhttp.open("GET","fetchenquiry.php?eid="+eID,true);
+			xmlhttp.send();
+	});
+	  </script>
 
 <div class="wrapper row0">
   <div id="topbar" class="hoc clear"> 
@@ -7,8 +101,36 @@
       </ul>
     </div>
     <div class="fl_right">
-
+	 <ul class="nospace inline pushright">
+<li class="dropdown"><i class="fa fa-question-circle" aria-hidden="true"></i> Enquiries
+				<div class="dropdown-content" style='overflow-y:scroll; height:200px;'>
+				
+				<?php
+					include 'dbconnection.php';
+					$SQLquery = "SELECT * FROM tblenquiries";
+					$QueryResult = mysql_query($SQLquery);
+					
+					if(mysql_num_rows($QueryResult) == 0)
+						{
+							echo "<a>No enquiries at the moment</a>";
+							
+						}
+					else
+						{
+							while(($row = mysql_fetch_assoc($QueryResult)) != false)
+							{
+								$title = $row["msg_title"];
+							
+								echo "Title: <a data-id=\"".$row['en_id']."\" data-toggle=\"modal\" data-target=\"#myMsgModal\" class=\"open-message\">" .$title. "</a>";
+							}
+							
+						}
+				?>
+				 
+				</div>
+			  </li>
 	 <li><i class="fa fa-sign-in"></i> <a href="logout.php">Logout</a></li>
+	 </ul>
     </div>
   </div>
 </div>
@@ -74,7 +196,7 @@
             <li><a href="add_tour.php">Add Tour</a></li>
             <li><a href="add_hotel.php">Add Hotel</a></li>
             <li><a href="add_room.php">Add Hotel Room</a></li>
-			<li><a href="add_notifications.php">Add Notification</a></li>
+			<li><a href="send_message.php">Send message</a></li>
 			<li><a href="dash_edit.php">Edit dashboard</a></li>
 			<li><a href="add_eventmanager.php">Add event manager</a></li>
 			<li><a href="dashboard1.php">View as participant</a></li>

@@ -42,7 +42,6 @@ Licence URI: http://www.os-templates.com/template-terms
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <link href="layout/styles/layout.css" rel="stylesheet" type="text/css" media="all">
-<link href="layout/styles/ray.css" rel="stylesheet" type="text/css" media="all">
 
 	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDig83sIOyi0hetUYaoD1_4IdmbIT2FGWc&libraries=places"></script>
 	<script src="https://www.jscache.com/wejs?wtype=socialButtonIcon&amp;uniq=221&amp;locationId=298309&amp;color=green&amp;size=rect&amp;lang=en_US&amp;display_version=2"></script>	
@@ -56,13 +55,86 @@ Licence URI: http://www.os-templates.com/template-terms
  -->	  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
 </head>
+<style>
+
+
+.dropbtn {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+.dropdown:hover .dropbtn {
+    background-color: red;
+}
+
+.dropdown {
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+::-webkit-scrollbar { 
+    display: none; 
+}
+
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1; cursor: pointer;}
+
+.dropdown:hover .dropdown-content {
+	cursor: hand;
+    display: block;
+}
+</style>
+
 <body id="top">
 
 <div class="wrapper row0">
   <div id="topbar" class="hoc clear"> 
     <div class="fl_right">
       <ul class="nospace inline pushright">
-	  	  		<li><i class="fa fa-sign-in"></i> <a href="Logout.php">Log out</a></li>
+ <li class="dropdown"><i class="fa fa-envelope"></i> Inbox
+				<div class="dropdown-content" style='overflow-y:scroll; height:200px;'>
+				<?php
+					$SQLquery = "SELECT * FROM tblnotifications WHERE p_id = '$logID'";
+					$QueryResult = $conn->query($SQLquery);
+					
+					if($QueryResult->num_rows == 0)
+						{
+							echo "<a>No messages at the moment</a>";
+							
+						}
+					else
+						{
+							while(($row = $QueryResult->fetch_assoc()) != false)
+							{
+								$title = $row["notification_title"];
+							
+								echo "<a data-id=\"".$row['n_id']."\" data-toggle=\"modal\" data-target=\"#myMsgModal\" class=\"open-message\">" .$title. "</a>";
+							}
+							
+						}
+		?>
+				 
+				</div>
+			  </li>
+			  <li><i class="fa fa-sign-in"></i> <a href="Logout.php">Log out</a></li>
 
       </ul>
     </div>
@@ -99,7 +171,7 @@ Licence URI: http://www.os-templates.com/template-terms
 
 
 <div class="wrapper row3">
-  <main class="hoc container clear"> 
+  <main class="hoc container clear" style="width:600px; margin-right:40%;"> 
     <!-- main body -->
 
 	<form action="processHotelTour.php" method="post" name="pForm" id="participation" >
@@ -438,7 +510,7 @@ Licence URI: http://www.os-templates.com/template-terms
 								 <table border='1px' >
 			   
 									<tr id=tHeader>
-									<th>Tour Listing</th>
+									<th style='text-align:center;'>Tour Listing</th>
 									<th>Price(RM)</th>
 									<th>Commencement Date</th>
 									<th>Action</th>
@@ -457,7 +529,7 @@ Licence URI: http://www.os-templates.com/template-terms
 									$price = $row["tour_price"];						
 									
 									//echo "<tr><td style='vertical-align:middle;'>$rID</td><input type='hidden' name='tourBookingID[]' value='$rID'/>";
-									echo "<td bgcolor='#FFFFFF' width='70%'>
+									echo "<td bgcolor='#FFFFFF' width='70%' style='text-align:center;'>
 											<strong>Tour Name</strong>: $name<a data-id='" .$tourID. "' data-toggle=\"modal\" data-target=\"#myModal\" class=\"open-details\"><i class=\"fa fa-info-circle\" style='float:right; color:#373737' aria-hidden=\"true\"></i></a>
 											<br />
 											<strong>Location</strong>: $location
@@ -466,7 +538,7 @@ Licence URI: http://www.os-templates.com/template-terms
 											<br/>
 											<strong>Duration</strong>: $duration
 									</td>";
-									echo "<td bgcolor='#FFFFFF' style='vertical-align:top;'>
+									echo "<td bgcolor='#FFFFFF' style='vertical-align:top; text-align:center'>
 											<br/>
 											$price<br>  
 									</td>";
@@ -575,7 +647,48 @@ Licence URI: http://www.os-templates.com/template-terms
 	});
 	  </script>	
 
-	  
+ <!-- Modal -->
+  <div class="modal hide" data-easein="fadeInDown" data-easeout="fadeOutDown" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" id="myMsgModal" >
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content"  style=' overflow-y:scroll; width:500px; height:250px;'>
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i></button>
+        </div>
+        <div class="modal-body">
+		  <div id="msgdetails"></div>
+        </div>
+
+        <!--<div class="modal-footer">
+        </div>-->
+      </div>
+    </div>
+  </div>
+  
+   <script>
+	  $(document).on("click", ".open-message", function () {
+		 var nID = $(this).data('id');
+		 
+			 if (window.XMLHttpRequest) {
+			// code for IE7+, Firefox, Chrome, Opera, Safari
+				xmlhttp = new XMLHttpRequest();
+			} else {
+				// code for IE6, IE5
+				xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					document.getElementById("msgdetails").innerHTML = this.responseText;
+				}
+			};
+			xmlhttp.open("GET","fetchmessage.php?nid="+nID,true);
+			xmlhttp.send();
+	});
+	  </script>	  
+	  	 
+
+	 
    
     <!-- / main body -->
     <div class="clear"></div>

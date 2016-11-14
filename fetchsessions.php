@@ -19,7 +19,6 @@ if(isset($_GET['cid']) && isset($_GET['pid'])) {
     $cid = $_GET['cid']; //escape string
     $refID = $_GET['refid']; //escape string
 	
-	
 	echo "<table border='1px' >
 			<tr id=tHeader>
 				<th>Session Name</th>
@@ -63,6 +62,8 @@ if(isset($_GET['cid']) && isset($_GET['pid'])) {
 		}
 
 	echo " </table>";
+	echo "<a href ='../test2/toPDF.php?id=$cid';\" target='_blank' download='Schedule.pdf' style='float:right;'><i class=\"fa fa-file-pdf-o fa-2x\" aria-hidden=\"true\"></i></a>";
+
 	echo "<h4><br>" .$cName." Conference<br></h4>";
 	echo "<h5><i class=\"fa fa-map-marker\" aria-hidden=\"true\"> " .$cVenue . "</i> </h5>";
 

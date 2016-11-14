@@ -106,7 +106,7 @@ $p->headerTable=$hdd;
 $p->AddPage();
 $p->htmltable($tables);
 ob_clean();
-$p->output("Summary.pdf",'I'); //D=download
+$p->output("Schedule.pdf",'I'); //D=download
  
 ?>
 
