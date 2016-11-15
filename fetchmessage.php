@@ -25,6 +25,7 @@ if(isset($_GET['nid'])) {
 					$sender = $row["em_id"];
 					$date=date_create($row["date_received"]);
 					$msg = $row["notification_message"];
+					$title = $row["notification_title"];
 					$smsg = stripslashes($msg);
 					echo "<p class='msg'><b>Title</b> : " .$row["notification_title"]. "<br>
 					      <b>Date sent</b> : " .date_format($date,"jS F Y");
@@ -66,6 +67,9 @@ if(isset($_GET['nid'])) {
 		
 }?><hr>
 <input type="submit" name="Submit" style="width:auto; float:left;" value="Delete" class="button" onclick="return confirm('Are you sure?');">
+
+<a class="button" name='reply'  style="float:right;" href="Enquiries.php?title=<?php echo $title; ?>"><i class="fa fa-reply" aria-hidden="true">     Reply</i></a>
+
 <?php
 
  if(isset($_POST["Submit"]))//checks if the submit button is selected

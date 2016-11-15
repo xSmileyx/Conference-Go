@@ -197,13 +197,13 @@ Licence URI: http://www.os-templates.com/template-terms
 					<?php echo $logFirstName. " " .$logSurName;?><br><br>
 				
 				Message Title: 
-					<input type="text" name="enSubject" class="twitter" id="enSubject" maxlength="30" autocomplete=off required><br>
+					<input type="text" name="enSubject" class="twitter" id="enSubject" maxlength="30"  value="<?php if(isset($_GET['title'])){echo "Reply: " .$_GET['title'];}  ?>"  autocomplete=off required><br>
 					
 				Message:<br>
 					<textarea name="enText" id="enText" class="twitter"  style="width:100%; height:200px;" maxlength="300" autocomplete=off required></textarea><br><br>
 							
 							
-				<input type="submit" name="submit" class="button" value="Send">
+				<input type="submit" name="submit" onclick="return validate();" class="button" value="Send">
 						
 				
 							
@@ -212,6 +212,24 @@ Licence URI: http://www.os-templates.com/template-terms
 
 
 </div>
+
+<script>
+function validate(){
+	if(document.getElementById('enSubject').value == '')
+	{		
+		alert("Please enter the subject.");
+		return false;
+	}
+	
+	if ($('#enText').val() == '')
+	{
+		alert("Please don't leave a blank message.");
+		return false;
+	}
+	
+	alert("Enquiry sent!");
+}
+</script>
 
 <!-- Modal -->
   <div class="modal hide" data-easein="fadeInDown" data-easeout="fadeOutDown" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" id="myMsgModal" >
